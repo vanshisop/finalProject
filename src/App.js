@@ -5,8 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Timeline from './Components/Timeline';
 import Trophies from './Components/Trophies';
 import RealMadridOrigins from './Components/RealMadridOrigins';
-import real_madrid_1trophy from './img/real_madrid_1trophy.jpg';
-import santiago from './img/santiago.png'
+
+import CopaDelRey from './Components/CopaDelRey';
+import SantiagoScroll from './Components/Santiago';
+import FirstPhoto from './Components/FirstPhoto';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
@@ -30,34 +32,34 @@ export default function App() {
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
     
-
     const scrollPercent = scrollPosition / (documentHeight - windowHeight);
 
     let newYear;
 
-    if (scrollPercent <= 0.12) {
+    if (scrollPercent <= 0.08) {
       setShowTimeLine(true);
       newYear = 1902;
-    } else if (scrollPercent > 0.12 && scrollPercent <= 0.24) {
+    } else if (scrollPercent > 0.08 && scrollPercent <= 0.16) {
       setShowTimeLine(true);
       setst1(true);
       setct1(true);
       newYear = 1903;
-    } else if (scrollPercent > 0.24 && scrollPercent <= 0.36) {
+    } else if (scrollPercent > 0.16 && scrollPercent <= 0.24) {
       setShowTimeLine(true);
       setct1(false);
       settp1(1);
       newYear = 1905;
-    } else if(scrollPercent > 0.36 && scrollPercent <= 0.60){
+    } else if(scrollPercent > 0.24 && scrollPercent <= 0.40){
       setShowTimeLine(false);
-      
-      // Calculate opacity for the overlay (0 to 1) as we scroll through the last section
       const overlayScrollPercent = (scrollPercent - 0.75) / 0.25;
       setOverlayOpacity(Math.min(1, Math.max(0, overlayScrollPercent)));
     }
-    else{
+    else if(scrollPercent > 0.40 && scrollPercent <= 0.85){
       setShowTimeLine(true)
       newYear = 1921;
+    }
+    else{
+      setShowTimeLine(false)
     }
 
     // Clamp the year between 1900 and 1965
@@ -127,25 +129,7 @@ export default function App() {
           <RealMadridOrigins />
 
           {/* Section 2 */}
-          <Parallax translateY={[-20, 20]} style={{
-            height: '140vh',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: 0,
-            padding: 0,
-          }}>
-            <div style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <h2>Copa Del Rey was established</h2>
-            </div>
-          </Parallax>
+          <CopaDelRey/>
 
           {/* Section 3 */}
           <Parallax translateY={[-20, 20]} style={{
@@ -164,60 +148,7 @@ export default function App() {
           </Parallax>
 
           {/* Section 4 and 5: Pinned Background + Fading Overlay */}
-          <div ref={sectionRef} style={{ height: '100vh', position: 'relative' }}>
-  {/* Pinned Background (sticky) */}
-  <div style={{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: '100%', // Take full height of the section but not more
-    width: '100%',
-    backgroundImage: `url(${real_madrid_1trophy})`,
-    backgroundSize: 'cover', // Ensure it covers the container, keeping aspect ratio
-    backgroundPosition: 'center center', // Center the image
-    zIndex: 1,
-  }} />
-  
-  {/* Overlay Content */}
-  <div ref={overlayRef} style={{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: '100%',
-    width: '100%',
-    zIndex: 2,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    padding: '2rem',
-    textAlign: 'center',
-  }}>
-    <div style={{
-      maxWidth: '800px',
-      background: 'rgba(0, 0, 0, 0.7)',
-      padding: '2rem',
-      borderRadius: '10px',
-    }}>
-      <h2>1905 Copa del Rey Winning Team</h2>
-      <p>The historic team that brought Real Madrid its first major trophy:</p>
-      <ul style={{ columns: 2 }}>
-        <li>Manuel Yarza (Captain)</li>
-        <li>José Berraondo</li>
-        <li>José Ángel Berraondo</li>
-        <li>Federico Revuelto</li>
-        <li>Antonio Alonso</li>
-        <li>Manuel Prast</li>
-        <li>Eduardo Arózamena</li>
-        <li>José Quirante</li>
-        <li>Francisco Palacios</li>
-        <li>Enrique Normand</li>
-        <li>Pedro Parages</li>
-      </ul>
-      <p>Coach: Arthur Johnson</p>
-    </div>
-  </div>
-</div>
+          <FirstPhoto />
 
 
           {/* Section 6-8 - Similar to 1-3, you can add more content below */}
@@ -298,25 +229,9 @@ export default function App() {
               </div>
             </Parallax>
             {/* Render Section 9 properly */}
-            <div
-            style={{
-              height: '100vh',
-              backgroundImage: `url(${santiago})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              textShadow: '2px 2px 8px rgba(0,0,0,0.7)', // Adds better text visibility
-              fontSize: '2.5rem',
-              fontWeight: 'bold',
-            }}
-          >
-     
-          </div>
-
+            <SantiagoScroll/>
+            <Parallax>
+              </Parallax>  
            
           </div>
 
