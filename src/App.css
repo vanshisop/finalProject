@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+
+
+.flex-container {
+  display: flex;
+  justify-content: space-between; /* Distribute space between the text and image */
+  gap: 80px; /* Optional: additional space between the items (you can remove this if using space-between) */
+  width: 80%; /* Set container width */
+  margin: 0 auto; /* Center the container horizontally */
+}
+
+.text-content, .image-content {
+  flex: 1; /* Ensure both take up equal width */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertically center content */
+}
+
+.image-content img {
+  width: 100%; /* Ensure the image fills the available space */
+  height: 60%; /* Make the image stretch vertically to match the height of the text */
+  border: 7px solid black;
+  border-radius: 10px;
+}
+
+body, html {
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
