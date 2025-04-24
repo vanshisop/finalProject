@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Timeline from './Components/Timeline';
 import Trophies from './Components/Trophies';
 import RealMadridOrigins from './Components/RealMadridOrigins';
 import real_madrid_1trophy from './img/real_madrid_1trophy.jpg';
+import santiago from './img/santiago.png'
+gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
   const [currentYear, setCurrentYear] = useState(1902);
   const [showTimeLine, setShowTimeLine] = useState(true);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [st1, setst1] = useState(false);
   const [st2, setst2] = useState(false);
   const [st3, setst3] = useState(false);
@@ -17,38 +22,42 @@ export default function App() {
   const [tp1, settp1] = useState(0);
   const [tp2, settp2] = useState(0);
   const [tp3, settp3] = useState(0);
-  const [overlayOpacity, setOverlayOpacity] = useState(0);
-
+  // Refs for Section 4 & 5
+  const sectionRef = useRef(null);
+  const overlayRef = useRef(null);
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
     
-    // Calculate scroll percentage (0 to 1)
+
     const scrollPercent = scrollPosition / (documentHeight - windowHeight);
 
     let newYear;
 
-    // Define the thresholds and corresponding years
-    if (scrollPercent <= 0.20) {
+    if (scrollPercent <= 0.12) {
       setShowTimeLine(true);
       newYear = 1902;
-    } else if (scrollPercent > 0.20 && scrollPercent <= 0.35) {
+    } else if (scrollPercent > 0.12 && scrollPercent <= 0.24) {
       setShowTimeLine(true);
       setst1(true);
       setct1(true);
       newYear = 1903;
-    } else if (scrollPercent > 0.35 && scrollPercent <= 0.6) {
+    } else if (scrollPercent > 0.24 && scrollPercent <= 0.36) {
       setShowTimeLine(true);
       setct1(false);
       settp1(1);
       newYear = 1905;
-    } else {
+    } else if(scrollPercent > 0.36 && scrollPercent <= 0.60){
       setShowTimeLine(false);
-      newYear = 1954;
+      
       // Calculate opacity for the overlay (0 to 1) as we scroll through the last section
       const overlayScrollPercent = (scrollPercent - 0.75) / 0.25;
       setOverlayOpacity(Math.min(1, Math.max(0, overlayScrollPercent)));
+    }
+    else{
+      setShowTimeLine(true)
+      newYear = 1921;
     }
 
     // Clamp the year between 1900 and 1965
@@ -56,17 +65,42 @@ export default function App() {
     
     setCurrentYear(newYear);
   };
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Pin Section 4
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top top",
+        end: "+=100%",
+        pin: true,
+        scrub: true,
+      });
 
+      // Animation for Overlay in Section 4
+      gsap.fromTo(overlayRef.current, {
+        opacity: 0, y: 50,
+      }, {
+        opacity: 1, y: 0,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=100%",
+          scrub: true,
+        }
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
   return (
     <ParallaxProvider>
       <div className="first-steps" style={{ position: 'relative' }}>
-        {/* Fixed top section */}
+        {/* Fixed top section for Sections 1-3 */}
         {showTimeLine && (
           <div style={{
             position: 'fixed',
@@ -86,12 +120,12 @@ export default function App() {
               trophy1Count={tp1} trophy2Count={tp2} trophy3Count={tp3}/>
           </div>
         )}
-        
+
         {/* Content area */}
         <div style={{ paddingTop: '80px' }}>
           {/* Section 1 */}
-          <RealMadridOrigins/>
-        
+          <RealMadridOrigins />
+
           {/* Section 2 */}
           <Parallax translateY={[-20, 20]} style={{
             height: '140vh',
@@ -102,8 +136,8 @@ export default function App() {
             margin: 0,
             padding: 0,
           }}>
-            <div style={{ 
-              width: '100%', 
+            <div style={{
+              width: '100%',
               height: '100%',
               display: 'flex',
               alignItems: 'center',
@@ -128,80 +162,166 @@ export default function App() {
               <h4>Real Madrid won their first Copa del Rey title in 1905, just three years after the club was founded...</h4>
             </div>
           </Parallax>
-          
-          {/* Section 4 - Just the background image */}
-          <div style={{
-            height: '100vh',
-            width: '100%',
-            backgroundImage: `url(${real_madrid_1trophy})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundAttachment: 'fixed',
-          }} />
-          
-          {/* Section 5 - Fixed background with fading overlay */}
-          <div style={{
-            position: 'relative',
-            height: '100vh',
-            width: '100%',
-          }}>
-            {/* Fixed Background */}
-            <div style={{
-              backgroundImage: `url(${real_madrid_1trophy})`,
+
+          {/* Section 4 and 5: Pinned Background + Fading Overlay */}
+          <div ref={sectionRef} style={{ height: '100vh', position: 'relative' }}>
+  {/* Pinned Background (sticky) */}
+  <div style={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%', // Take full height of the section but not more
+    width: '100%',
+    backgroundImage: `url(${real_madrid_1trophy})`,
+    backgroundSize: 'cover', // Ensure it covers the container, keeping aspect ratio
+    backgroundPosition: 'center center', // Center the image
+    zIndex: 1,
+  }} />
+  
+  {/* Overlay Content */}
+  <div ref={overlayRef} style={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    padding: '2rem',
+    textAlign: 'center',
+  }}>
+    <div style={{
+      maxWidth: '800px',
+      background: 'rgba(0, 0, 0, 0.7)',
+      padding: '2rem',
+      borderRadius: '10px',
+    }}>
+      <h2>1905 Copa del Rey Winning Team</h2>
+      <p>The historic team that brought Real Madrid its first major trophy:</p>
+      <ul style={{ columns: 2 }}>
+        <li>Manuel Yarza (Captain)</li>
+        <li>José Berraondo</li>
+        <li>José Ángel Berraondo</li>
+        <li>Federico Revuelto</li>
+        <li>Antonio Alonso</li>
+        <li>Manuel Prast</li>
+        <li>Eduardo Arózamena</li>
+        <li>José Quirante</li>
+        <li>Francisco Palacios</li>
+        <li>Enrique Normand</li>
+        <li>Pedro Parages</li>
+      </ul>
+      <p>Coach: Arthur Johnson</p>
+    </div>
+  </div>
+</div>
+
+
+          {/* Section 6-8 - Similar to 1-3, you can add more content below */}
+          <div style={{ paddingTop: '80px' }}>
+            {/* Section 6 */}
+            <Parallax translateY={[-20, 20]} style={{
+              height: '100vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#ffffff', padding: '20px', borderRadius: '12px', maxWidth: '700px', margin: 'auto', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', lineHeight: '1.6' }}>
+      <h2 style={{ color: '#2c3e50' }}>⚽ Early Glory of Madrid Football Club (1910–1920)</h2>
+      <p>
+        In the early 20th century, <strong>Madrid Football Club</strong> quickly emerged as a dominant force in Spanish football. Their early triumphs in the <strong>Copa del Rey</strong> — then the most prestigious national competition — were a testament to their quality and ambition. Madrid FC secured an incredible four consecutive titles in <strong>1905</strong>, <strong>1906</strong>, <strong>1907</strong>, and <strong>1908</strong>, becoming the first club to achieve such a feat. These victories played a crucial role in establishing the club's reputation and setting the stage for future successes.
+      </p>
+      <p>
+        As the club's influence grew, so did its infrastructure. In <strong>1912</strong>, Madrid FC inaugurated its first official stadium, <strong>Campo de O'Donnell</strong>. With a capacity of around 5,000 spectators, this stadium provided a permanent home for the club, enhancing its professional image and fan experience.
+      </p>
+      <p>
+        At that point, the club was still operating under the name <strong>Madrid Football Club</strong>. It wasn't until <strong>1920</strong> that King Alfonso XIII granted the club royal patronage, bestowing the title <strong>"Real"</strong> (meaning "Royal") and allowing the team to become officially known as <strong>Real Madrid Club de Fútbol</strong>. Along with the new name came a redesigned crest featuring the royal crown, symbolizing the club’s elevated status in Spanish society.
+      </p>
+    </div>
+            </Parallax>
+
+            {/* Section 7 */}
+            <Parallax translateY={[-20, 20]} style={{
+              height: '160vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <div style={{ width: '60%' }}>
+               <p>La Liga, officially known as the Primera División,
+                 was established in 1928 to bring greater organization and 
+                 competition to Spanish football. Before its inception, football 
+                 in Spain was more regional, with clubs competing in various local and 
+                 regional tournaments. The creation of La Liga marked a new era for Spanish football, and it became the top-tier professional league, 
+                 providing a platform for the country's best teams to compete on a national level. The first season of La Liga, held in 1929, 
+                 featured 10 teams, including some of Spain's most prominent clubs. This new league structure allowed for more consistent 
+                 and high-level competition, helping to elevate the status of Spanish football internationally.</p>
+              </div>
+            </Parallax>
+
+            {/* Section 8 */}
+            <Parallax translateY={[-20, 20]} style={{
+              height: '100vh',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: 0,
+              padding: 0,
+            }}>
+              <div style={{
+                width: '60%',
+                height: '100%',
+              }}>
+                <h2>Real Madrid's 1930s and Spanish Civil War</h2>
+                <p>During the early years of La Liga, Real Madrid quickly established itself as one of the dominant forces in Spanish football. The club won its first La Liga title in 1932, cementing its place as a leading team in the country. Despite the disruptions caused by the Spanish Civil War (1936-1939), Real Madrid emerged from the conflict stronger and more focused. Under the leadership of President Santiago Bernabéu, who took office in 1943, Madrid began to regain its form and build a foundation for future success. Between 1930 and 1943, the club also claimed several Copa del Rey titles, with their triumph in 1943 standing out, where they famously defeated Barcelona 11-1 in the semi-finals. These early successes set the stage for the club's later dominance in Spanish and European football.</p>
+              </div>
+            </Parallax>
+
+            <Parallax translateY={[-20, 20]} style={{
+              height: '100vh',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: 0,
+              padding: 0,
+            }}>
+              <div style={{
+                width: '60%',
+                height: '100%',
+              }}>
+               <h1>Early Success Line Chart</h1>
+              </div>
+            </Parallax>
+            {/* Render Section 9 properly */}
+            <div
+            style={{
+              height: '100vh',
+              backgroundImage: `url(${santiago})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              backgroundAttachment: 'fixed',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: 1
-            }} />
-            
-            {/* Content Overlay that fades in on scroll */}
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: 2,
-              backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 0.7})`,
+              backgroundRepeat: 'no-repeat',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
-              transition: 'background-color 0.3s ease',
-            }}>
-              <div style={{
-                maxWidth: '800px',
-                padding: '2rem',
-                background: `rgba(0, 0, 0, ${overlayOpacity * 0.8})`,
-                borderRadius: '10px',
-                transform: `translateY(${(1 - overlayOpacity) * 50}px)`,
-                opacity: overlayOpacity,
-                transition: 'all 0.5s ease',
-              }}>
-                <h2>1905 Copa del Rey Winning Team</h2>
-                <p>The historic team that brought Real Madrid its first major trophy:</p>
-                <ul style={{ columns: 2 }}>
-                  <li>Manuel Yarza (Captain)</li>
-                  <li>José Berraondo</li>
-                  <li>José Ángel Berraondo</li>
-                  <li>Federico Revuelto</li>
-                  <li>Antonio Alonso</li>
-                  <li>Manuel Prast</li>
-                  <li>Eduardo Arózamena</li>
-                  <li>José Quirante</li>
-                  <li>Francisco Palacios</li>
-                  <li>Enrique Normand</li>
-                  <li>Pedro Parages</li>
-                </ul>
-                <p>Coach: Arthur Johnson</p>
-              </div>
-            </div>
+              textShadow: '2px 2px 8px rgba(0,0,0,0.7)', // Adds better text visibility
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+            }}
+          >
+     
           </div>
+
+           
+          </div>
+
+          
+
         </div>
       </div>
     </ParallaxProvider>
