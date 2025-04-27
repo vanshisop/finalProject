@@ -5,10 +5,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Timeline from './Components/Timeline';
 import Trophies from './Components/Trophies';
 import RealMadridOrigins from './Components/RealMadridOrigins';
+import TopPlayers  from './Components/TopPlayers';
 
 import CopaDelRey from './Components/CopaDelRey';
 import SantiagoScroll from './Components/Santiago';
 import FirstPhoto from './Components/FirstPhoto';
+
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
@@ -229,9 +231,21 @@ export default function App() {
               </div>
             </Parallax>
             {/* Render Section 9 properly */}
+            {/* Section: Top Players Network */}
+          <Parallax translateY={[-10, 10]} style={{
+                height: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'white',
+              }}>
+            <TopPlayers />
+            
+          </Parallax>
+
             <SantiagoScroll/>
             <Parallax>
-              </Parallax>  
+            </Parallax>  
            
           </div>
 
