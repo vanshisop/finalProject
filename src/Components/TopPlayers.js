@@ -1,22 +1,23 @@
 // import { Parallax } from 'react-scroll-parallax';
-import React, { useEffect, useRef } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import jersey from '../img/jersey.png';
 import football_pitch from '../img/football_pitch.png';
 // import tv_screen from '../img/tv_screen.png'; // Removed TV image import
 import * as d3 from 'd3';
-
+import jsonFile from '../mng/topPlayers_network.json';
+import csvFile from '../mng/top50players.csv';
 const form_positions = [
-  {id:27, position: "GK", x: 305 - 10, y: 555 - 90},
-  {id:33, position: "LB", x: 100 - 90, y: 460 - 30},
-  {id:38, position: "CB", x: 220 - 50, y: 460 - 30},
-  {id:2, position: "CB", x: 380 + 30, y: 460 - 30},
-  {id:28, position: "RB", x: 500 + 90, y: 460 - 20},
-  {id:39, position: "CM", x: 200 - 20, y: 350 - 20},
-  {id:48, position: "CM", x: 300 - 20, y: 350 - 20},
-  {id:11, position: "CM", x: 400 - 20, y: 350 - 20},
-  {id:49, position: "LW", x: 100 - 10, y: 200 - 10},
-  {id:50, position: "ST", x: 300 - 10, y: 200 - 10},
-  {id:47, position: "RW", x: 500 - 10, y: 200 - 10}
+  { id: 27, position: "GK", x: 599 - 6, y: 495 },
+  { id: 33, position: "LB", x: 290 - 110, y: 430 },
+  { id: 38, position: "CB", x: 470 - 50, y: 430 },
+  { id: 2,  position: "CB", x: 710 + 30, y: 430 },
+  { id: 28, position: "RB", x: 890 + 90, y: 440 },
+  { id: 39, position: "CM", x: 420 - 80, y: 300 },
+  { id: 48, position: "CM", x: 594 - 6, y: 330 },
+  { id: 11, position: "CM", x: 790 + 90, y: 300 },
+  { id: 49, position: "LW", x: 390 - 10, y: 180 },
+  { id: 50, position: "ST", x: 590 - 10, y: 160 },
+  { id: 47, position: "RW", x: 790 - 10, y: 190 }
 ];   
 
 
@@ -247,108 +248,34 @@ const topXI_data = {
   ]
 }
 
-function defaultNetwork(container, options = {}) {
-  // Clear any existing SVG to prevent duplication
-  d3.select(container).select('svg').remove();
+function defaultNetwork(container, options = {}, handlePlayerClick) {
   
-  const width = options.width * 2;
+  d3.select(container).selectAll('svg').remove();
+  
+  const width = options.width;
   const height = options.height + 600;
-
+  
   const tooltip = d3.select(container).select('#tooltip');
+  
+ //remove ALL d3 elements
+
   
   const svg = d3.select(container)
     .append('svg')
-    .attr('width', width/2)
+    .attr('width', width)
     .attr('height', height/2)
-    .style('z-index', 50) // Increased z-index to be above all other elements
+    .style('z-index', 3) 
     .style('position', 'absolute')
-    .style('left', '50%')
-    .style('top', '30%')
-    .style('transform', 'translate(-20%, -50%))')
+    .style('left', '0')
+    .style('top', '0')
+    .style('transform', 'translate(0,0)')
     .style('pointer-events', 'all');
 
-  // Create container for all visualization elements to better control positioning
   const vizGroup = svg.append('g')
     .attr('class', 'viz-container');
 
-  const validLinks = topXI_data.links.filter(link => {
-    return topXI_data.nodes.some(n => n.id === link.source) && 
-           topXI_data.nodes.some(n => n.id === link.target);
-  });
 
-  const simulation = d3.forceSimulation(topXI_data.nodes)
-    .force(
-      'link',
-      d3.forceLink(validLinks)
-        .id(d => d.id)
-    )
-    .force('center', d3.forceCenter(width / 10, height / 10))
-    .on('tick', ticked);
-
-  const link = vizGroup
-    .selectAll('.link')
-    .data(validLinks)
-    .enter()
-    .append('line')
-    .attr('class', 'link')
-    .style('stroke', 'white') // Changed to white for better visibility
-    .style('stroke-opacity', 0.8) // Increased opacity
-    .attr('stroke-width', d => Math.max(2, d.value * 0.15)); // Increased minimum width and scaling
-
-  const node = vizGroup.selectAll('.node')
-    .data(topXI_data.nodes)
-    .enter()
-    .append("g")
-    .attr("class", "node")
-    .style('stroke', '#aaa')
-    .on('mouseover', (event, d) => {
-      const connected = validLinks
-        .filter(link => (link.source.id === d.id))
-        .map(link => {
-          const targetNode = topXI_data.nodes.find(n => (n.id === link.target.id));
-          return targetNode ? targetNode.name : 'Unknown';
-        });
-
-      const targetsText = connected.length ? connected.join(', ') : 'None';
-        
-      tooltip
-        .style('opacity', 1)
-        .html(`<strong>${d.name}</strong><br/>Targets: ${targetsText}`);
-
-      console.log(d.name + " " + "targetsText"); 
-    })
-    .on('mousemove', (event) => {
-      tooltip
-        .style('left', (event.pageX + 2) + 'px')
-        .style('top', (event.pageY + 2) + 'px');
-    })
-    .on('mouseout', () => {
-      tooltip.style('opacity', 0);
-    });
-
-  node.append("image")
-    .attr("xlink:href", jersey)
-    .attr("width", 140)
-    .attr("height", 140)
-    .attr('x', -33.5)
-    .attr('y', -41.5)
-    // .style("transform", "rotate(180deg)")
-    .style("z-index", 8);
-
-  node.append("text")
-    .text(d => d.name)    
-    .attr("text-anchor", "middle") 
-    .attr("dy", 20)    
-    .attr("dx", d => {
-      if (d.id === "LB"){
-        return 6;
-      }
-      return -10;
-    })            
-    .attr("font-size", "10px")   
-    .attr("fill", "black");
-    // .style("transform", "rotate(180deg)");
-    
+  
 
   topXI_data.nodes.forEach(node => {
     const pos = form_positions.find(p => p.id === node.id);
@@ -362,6 +289,144 @@ function defaultNetwork(container, options = {}) {
       node.fy = pos.y;
     }
   });
+
+
+  d3.forceSimulation(topXI_data.nodes)
+    .force(
+      'link',
+      d3.forceLink(topXI_data.links)
+        .id(d => d.id)
+    )
+    .force('center', d3.forceCenter(width / 2, height / 4))
+    .on('tick', ticked);
+
+    const link = vizGroup
+      .selectAll('.link')
+      .data(topXI_data.links)
+      .enter()
+      .append('path')
+      .attr('class', 'link')
+      .style('stroke', 'white')
+      .style('stroke-opacity', 0.8)
+      .style('fill', 'none')
+      .attr('stroke-width', d => d.value * 0.2)
+      .on('click', (event, linkData) => {
+        const sourceId = linkData.source.id;
+        const targetId = linkData.target.id;
+
+        const sourceName = topXI_data.nodes.find(n => n.id === sourceId).name;
+        const targetName = topXI_data.nodes.find(n => n.id === targetId).name;
+
+        // Highlight the node
+        node.style('opacity', nodeData =>
+          (nodeData.id === sourceId || nodeData.id === targetId) ? 1 : 0
+        );
+      
+        // highlight the link
+        link.style('opacity', l =>
+          (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
+        );
+      
+        const [mouseX, mouseY] = d3.pointer(event);
+
+        tooltip
+        .html(`<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`)
+        .style('left', `${mouseX}px`)
+        .style('top', `${mouseY - 30}px`)
+        .style('opacity', 1)
+        .transition()
+        .duration(50);      
+
+        console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
+      
+        // animate for 1 second
+        setTimeout(() => {
+          node.style('opacity', 1);
+          link.style('opacity', 1);
+
+        }, 1000);
+      })
+      .on('mouseover', (event, linkData) => {
+        const sourceId = linkData.source.id;
+        const targetId = linkData.target.id;
+
+        const sourceName = topXI_data.nodes.find(n => n.id === linkData.source.id).name;
+        const targetName = topXI_data.nodes.find(n => n.id === linkData.target.id).name;
+
+        // Highlight the node
+        node.style('opacity', nodeData =>
+          (nodeData.id === sourceId || nodeData.id === targetId) ? 1 : 0
+        );
+      
+        // highlight the link
+        link.style('opacity', l =>
+          (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
+        );
+      
+        const [mouseX, mouseY] = d3.pointer(event);
+
+        tooltip
+        .html(`<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`)
+        .style('left', `${mouseX + 10}px`)
+        .style('top', `${mouseY + 20}px`)
+        .style('opacity', 1)
+        .transition()
+        .duration(50);      
+
+        console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
+      
+        // animate for 1 second
+        setTimeout(() => {
+          node.style('opacity', 1);
+          link.style('opacity', 1);
+
+        }, 1000);
+      })
+      .on('mouseout', () => {
+        tooltip.style('opacity', 0);
+        node.style('opacity', 1);
+        link.style('opacity', 1);
+      })
+      .attr('fill', 'none')
+               
+      link
+        .attr('d', d3.linkHorizontal()
+          .source(d => [d.source.x, d.source.y])
+          .target(d => [d.target.x, d.target.y])
+      );
+
+  const node = vizGroup.selectAll('.node')
+    .data(topXI_data.nodes)
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .style('stroke', '#aaa')
+    .on('click', (event, data) => {
+      handlePlayerClick(data);  
+    });
+    
+  node.append("image")
+    .attr("xlink:href", jersey)
+    .attr("width", 100)
+    .attr("height", 100)
+    .attr('x', -33.5)
+    .attr('y', -41.5)
+    .style("z-index", 3);
+
+  node.append("text")
+    .text(d => d.name)    
+    .attr("text-anchor", "middle") 
+    .attr("dy", 68)    
+    .attr("dx", d => {
+      if (d.id === "LB"){
+        return 10;
+      }
+      return 18;
+    })            
+    .attr("font-size", "10px")   
+    .attr("fill", "black")
+    .style("z-index", 4);
+    
 
   function ticked() {
     link
@@ -377,38 +442,110 @@ function defaultNetwork(container, options = {}) {
   return svg;
 }
 
+
 const TopPlayers = () => {
   const containerRef = useRef();
   const vizRef = useRef(null);
-
+  const [showSubstitutes, setShowSubstitutes] = useState(false);
+  const [playersData, setPlayersData] = useState(null);
+  const [swapPlayerID, setSwapPlayerID] = useState(0);
+  const [checkXI, setCheckXI] = useState(false);
+  
   useEffect(() => {
-    // Prevent multiple initializations
-    if (containerRef.current && !vizRef.current) {
-      vizRef.current = defaultNetwork(containerRef.current, { width: 1200, height: 550 }); // Adjusted dimensions
-      
-      // Fine-tune the SVG position after it's created (only once)
-      setTimeout(() => {
-        const svg = d3.select(containerRef.current).select('svg');
-        if (svg.node()) {
-          // Adjusted transform to fix positioning issues - reduced rotation scaling
-          // svg.style('transform', 'translate(-70%, -20%) rotate(180deg) scale(0.7)');
-        }
-      }, 100);
-    }
+    console.log(topXI_data);
     
-    // Cleanup function to prevent memory leaks
-    return () => {
-      if (vizRef.current) {
-        d3.select(containerRef.current).select('svg').remove();
-        vizRef.current = null;
+    if ((containerRef.current && !vizRef.current ) || checkXI) {
+      vizRef.current = defaultNetwork(containerRef.current, { width: 2000, height: 550 }, handlePlayerClick);
+    }
+
+    const fetchPlayersData = async () => {
+      try {
+       
+        const data =  jsonFile;
+        setPlayersData(data);
+        setCheckXI(false)
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
       }
     };
-  }, []);
+    fetchPlayersData();
+  }, [checkXI]);
 
+  const handlePlayerClick = (playerData) => {
+    setShowSubstitutes(true);
+    setSwapPlayerID(playerData.id);
+    console.log(`Player clicked: ${playerData.name}`);
+  };
+  function handleSwap(player) {
+    console.log("hi");
+    
+    const playerID = player.id;
+    const swapPlayer = playersData.nodes.find(p => p.id === swapPlayerID);
+    topXI_data.nodes = topXI_data.nodes.filter(node => {
+      return node.id !== swapPlayer.id;
+    })
+    topXI_data.links = topXI_data.links.filter(link => {
+      return link.source.id !== swapPlayerID && link.target.id !== swapPlayerID;
+    });
+    d3.csv(csvFile).then(data => {
+      const linksToPlayer = data.filter(link => {
+        
+        return link["Player_Name1"] === player.name || link["Player_Name2"] === player.name;
+      });
+      for (let i = 0; i < linksToPlayer.length; i++) {
+        if(topXI_data.nodes.some(n => n.name === linksToPlayer[i]["Player_Name2"])){
+          topXI_data.links.push({
+            source: playerID,
+            target: topXI_data.nodes.find(n => n.name === linksToPlayer[i]["Player_Name2"]).id,
+            value: linksToPlayer[i]["Number_of_years_played_together"]
+          });
+        }
+        if(topXI_data.nodes.some(n => n.name === linksToPlayer[i]["Player_Name1"])){
+          topXI_data.links.push({
+            source: playerID,
+            target: topXI_data.nodes.find(n => n.name === linksToPlayer[i]["Player_Name1"]).id,
+            value: linksToPlayer[i]["Number_of_years_played_together"]
+          });
+        }
+
+       setCheckXI(true);
+
+
+
+      }
+
+      topXI_data.nodes.push(  {
+        id: playerID,
+        name: player.name,
+        position: swapPlayer.position,
+ 
+      })
+
+      for (let i = 0; i < form_positions.length; i++) {
+        if (form_positions[i].id === swapPlayer.id) {
+          form_positions[i].id = playerID;
+        }
+      }
+      console.log(form_positions);
+      console.log(topXI_data.links);
+      
+      
+
+
+
+
+    });
+    
+    
+    // Perform the swap logic here
+    // For example, you can update the state or make an API call to save the changes
+
+    setShowSubstitutes(false);
+  }
   return (
-    <div 
+    <div
       className="tv-container"
-      ref={containerRef} 
+      ref={containerRef}
       style={{
         position: 'relative',
         width: '1200px',
@@ -417,8 +554,7 @@ const TopPlayers = () => {
         overflow: 'visible',
       }}
     >
-      {/* TV Frame */}
-      <div 
+      <div
         className="tv-frame"
         style={{
           position: 'absolute',
@@ -427,7 +563,7 @@ const TopPlayers = () => {
           transform: 'translate(-50%, -50%)',
           width: '1050px',
           height: '620px',
-          backgroundColor: 'rgba(34, 34, 34, 0.8)', // Made slightly transparent
+          backgroundColor: 'rgba(34, 34, 34, 0.8)',
           borderRadius: '20px',
           boxShadow: '0 0 30px rgba(0,0,0,0.4)',
           padding: '20px',
@@ -436,7 +572,6 @@ const TopPlayers = () => {
           zIndex: 1,
         }}
       >
-        {/* Football Pitch inside TV frame */}
         <div
           style={{
             position: 'absolute',
@@ -449,12 +584,114 @@ const TopPlayers = () => {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             pointerEvents: 'none',
-            zIndex: 5,
-            opacity: 0.9, // Reduced opacity to make links more visible
+            zIndex: 2,
+            opacity: 0.9,
           }}
         />
+        <div
+          className={`substitutes-panel ${showSubstitutes ? 'show' : ''}`}
+          style={{
+            position: 'absolute',
+            bottom: '0',
+            left: '0%',
+            transform: 'translateX(-50%)',
+            width: '97%',
+            height: '200px',
+            backgroundColor: 'rgba(34, 34, 34, 0.9)',
+            zIndex: 700,
+            padding: '20px',
+            boxShadow: '0 0 20px rgba(0, 0, 0, 0.6)',
+            overflowY: 'auto',
+            opacity: showSubstitutes ? 1 : 0,
+            pointerEvents: showSubstitutes ? 'auto' : 'none',
+            transition: 'opacity 0.5s ease, transform 0.5s ease',
+            transform: showSubstitutes ? 'translateY(0)' : 'translateY(100%)',
+          }}
+        >
+          <div className="substitutes" style={{}}>
+            <h2 style={{ color: 'white', textAlign: 'center' }}>Substitutes</h2>
+            <div
+              className="substitutes-list" style={{ display: 'flex',justifyContent: 'space-around',flexWrap: 'wrap',padding: '10px'}}>
+              {playersData && playersData.nodes ? (
+                  playersData.nodes
+                    .filter(player => !topXI_data.nodes.some(p => p.id === player.id ))
+                    .filter(player => player.id > 25)
+                    .map(player => (
+                      <div
+                        key={player.id}
+                        className="reserve"
+                        onClick={() => handleSwap(player)}
+                        style={{
+                          backgroundColor: 'blue',
+                          color: 'white',
+                          padding: '10px',
+                          borderRadius: '5px',
+                          margin: '5px',
+                          width: '150px',
+                          textAlign: 'center',
+                        }
+                        
+                      }
+                      >
+                        {player.name}
+                      </div>
+                    ))
+                ) : (
+                  <div>Loading reserves...</div>
+                )}
+            </div>
+            <div className="reserves" style={{}}>
+              <h2 style={{ color: 'white', textAlign: 'center' }}>Reserves</h2>
+              <div
+                className="reserves-list"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-around',
+                  flexWrap: 'wrap',
+                  padding: '10px',
+                }} >
+                {playersData && playersData.nodes ? (
+                  playersData.nodes
+                    .filter(player => !topXI_data.nodes.some(p => p.id === player.id ))
+                    .filter(player => player.id <= 25)
+                    .map(player => (
+                      <div
+                        key={player.id}
+                        className="reserve"
+                        style={{
+                          backgroundColor: 'red',
+                          color: 'white',
+                          padding: '10px',
+                          borderRadius: '5px',
+                          margin: '5px',
+                          width: '150px',
+                          textAlign: 'center',
+                        }}
+                      >
+                        {player.name}
+                      </div>
+                    ))
+                ) : (
+                  <div>Loading reserves...</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="tooltip" style={{ position: 'absolute', opacity: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.8)', color: 'white', padding: '8px', borderRadius: '4px' }} />
+
+      <div
+        id="tooltip"
+        style={{
+          position: 'absolute',
+          opacity: 0,
+          zIndex: 100,
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          color: 'white',
+          padding: '8px',
+          borderRadius: '4px',
+        }}
+      />
     </div>
   );
 };
