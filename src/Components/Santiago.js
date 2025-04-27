@@ -36,39 +36,37 @@ const Santiago = () => {
       // Step 1: Fade in overlayRef (start of scroll)
       tl.fromTo(overlayRef.current, 
         { opacity: 0 }, 
-        { opacity: 1, duration: 0.3 }
+        { opacity: 1, duration: 1.2 }
       );
   
       // Step 2: Fade out overlayRef
       tl.to(overlayRef.current, 
-        { opacity: 0, duration: 0.3 }
+        { opacity: 0, duration: 1 }
       );
   
       // Step 3: Fade in overlayRef2
       tl.fromTo(overlayRef2.current, 
         { opacity: 0 }, 
-        { opacity: 1, duration: 0.3 }
+        { opacity: 1, duration: 1 }
       );
       
       tl.to(overlayRef2.current,
-        { opacity: 0 , duration: 0.3}, 
+        { opacity: 0 , duration: 1}, 
         )
     
       tl.fromTo(overlayRef3.current, 
             { opacity: 0 }, 
-            { opacity: 1, duration: 0.3 }
+            { opacity: 1, duration: 1 }
           );
           
        tl.to(overlayRef3.current,
-            { opacity: 0 , duration: 0.3}, 
+            { opacity: 0 , duration: 1}, 
             )
       tl.fromTo(overlayRef4.current, 
                 { opacity: 0 }, 
                 { opacity: 1, duration: 0.3 }
               );
-      tl.to(overlayRef4.current,
-                { opacity: 0 , duration: 0.3}, 
-                )
+    
      
 
     }, sectionRef);
