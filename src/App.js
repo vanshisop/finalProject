@@ -5,10 +5,17 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Timeline from './Components/Timeline';
 import Trophies from './Components/Trophies';
 import RealMadridOrigins from './Components/RealMadridOrigins';
-
+import Ramos from './Components/Ramos';
 import CopaDelRey from './Components/CopaDelRey';
 import SantiagoScroll from './Components/Santiago';
 import FirstPhoto from './Components/FirstPhoto';
+import LostDominance from './Components/Lost Dominance';
+import Galacticos from './Components/Galacticos';
+import GalacticoPhotos from './Components/GalacticoPhotos'
+import GalacticoVis from './Components/GalacticoDataVis';
+import Ronaldo from './Components/Ronaldo';
+import UCL from './Components/UCL';
+import ELClasicoVis from './Components/ElClasicoVis';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
@@ -54,16 +61,34 @@ export default function App() {
       const overlayScrollPercent = (scrollPercent - 0.75) / 0.25;
       setOverlayOpacity(Math.min(1, Math.max(0, overlayScrollPercent)));
     }
-    else if(scrollPercent > 0.40 && scrollPercent <= 0.85){
+    else if(scrollPercent > .48 && scrollPercent <= 0.56){
       setShowTimeLine(true)
+      settp1(5)
       newYear = 1921;
+    }
+    else if(scrollPercent > .56 && scrollPercent <= 0.64){
+      setShowTimeLine(true)
+      setst2(true)
+      setct2(true)
+      newYear = 1927;
+    }
+    else if(scrollPercent > .64 && scrollPercent <= 0.72){
+      setct2(false)
+      setShowTimeLine(true)
+      settp1(7)
+      settp2(2)
+      newYear = 1927;
+    }
+    else if(scrollPercent >.72 && scrollPercent <.92){
+      setShowTimeLine(false)
     }
     else{
       setShowTimeLine(false)
+      
     }
 
     // Clamp the year between 1900 and 1965
-    newYear = Math.max(1900, Math.min(1965, newYear));
+    newYear = Math.max(1900, Math.min(2025, newYear));
     
     setCurrentYear(newYear);
   };
@@ -230,9 +255,14 @@ export default function App() {
             </Parallax>
             {/* Render Section 9 properly */}
             <SantiagoScroll/>
-            <Parallax>
-              </Parallax>  
-           
+            <LostDominance/>
+            <Galacticos/>
+            <GalacticoPhotos/>
+            <GalacticoVis/>
+            <UCL/>
+            <Ramos/>
+            <Ronaldo/>
+            <ELClasicoVis/>
           </div>
 
           
