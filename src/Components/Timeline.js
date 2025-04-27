@@ -92,7 +92,7 @@ const Timeline = ({ currentYear }) => {
   // Calculate icon position with animation
   const iconPosition = {
     left: `${margin.left + (currentYear - 1900) / (2025 - 1900) * width }px`,
-    top: `${margin.top + height / 2 - 12 + 15}px`,
+    top: `${margin.top + height / 2 - 12 + 13}px`,
     transition: 'left 0.8s cubic-bezier(0.33, 1, 0.68, 1)' // Match D3 transition
   };
 

@@ -33,9 +33,9 @@ const Trophies = ({
 
     // Define trophy data
     const trophies = [
-      { id: 1, x: 55, y: 70, circle: circletrophy1, show: showTrophy1, image: laliga, count: trophy1Count },
-      { id: 2, x: 120, y: 70, circle: circletrophy2, show: showTrophy2, image: uefa, count: trophy2Count }, 
-      { id: 3, x: 185, y: 70, circle: circletrophy3, show: showTrophy3, image: copa, count: trophy3Count }  
+      { id: 1, x: 55, y: 70, circle: circletrophy1, show: showTrophy1, image: copa, count: trophy1Count },
+      { id: 2, x: 120, y: 70, circle: circletrophy2, show: showTrophy2, image: laliga, count: trophy2Count }, 
+      { id: 3, x: 185, y: 70, circle: circletrophy3, show: showTrophy3, image: uefa, count: trophy3Count }  
     ];
 
     // Create filters
