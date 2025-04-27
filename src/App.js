@@ -11,6 +11,18 @@ import CopaDelRey from './Components/CopaDelRey';
 import SantiagoScroll from './Components/Santiago';
 import FirstPhoto from './Components/FirstPhoto';
 
+import Ramos from './Components/Ramos';
+import CopaDelRey from './Components/CopaDelRey';
+import SantiagoScroll from './Components/Santiago';
+import FirstPhoto from './Components/FirstPhoto';
+import LostDominance from './Components/Lost Dominance';
+import Galacticos from './Components/Galacticos';
+import GalacticoPhotos from './Components/GalacticoPhotos'
+import GalacticoVis from './Components/GalacticoDataVis';
+import Ronaldo from './Components/Ronaldo';
+import UCL from './Components/UCL';
+import ELClasicoVis from './Components/ElClasicoVis';
+
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
@@ -246,10 +258,17 @@ export default function App() {
             <SantiagoScroll/>
             <Parallax>
             </Parallax>  
-           
-          </div>
 
-          
+            <LostDominance/>
+            <Galacticos/>
+            <GalacticoPhotos/>
+            <GalacticoVis/>
+            <UCL/>
+            <Ramos/>
+            <Ronaldo/>
+            <ELClasicoVis/>
+
+          </div>
 
         </div>
       </div>
