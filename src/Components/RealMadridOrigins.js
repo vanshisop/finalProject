@@ -10,12 +10,12 @@ export default function RealMadridOrigins() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      paddingTop: '90px'
     }}>
       <div style={{
         color: 'black',
         padding: '40px',
         borderRadius: '12px',
-        maxWidth: '1000px',
         textAlign: 'center',
       }}>
       <div className="flex-container">
