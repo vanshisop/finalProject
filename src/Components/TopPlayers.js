@@ -1,5 +1,8 @@
 // import { Parallax } from 'react-scroll-parallax';
 import React, { useEffect, useRef } from 'react';
+import jersey from '../img/jersey.png';
+import football_pitch from '../img/football_pitch.png';
+// import tv_screen from '../img/tv_screen.png'; // Removed TV image import
 import * as d3 from 'd3';
 
 const form_positions = [
@@ -245,17 +248,28 @@ const topXI_data = {
 }
 
 function defaultNetwork(container, options = {}) {
+  // Clear any existing SVG to prevent duplication
+  d3.select(container).select('svg').remove();
+  
   const width = options.width * 2;
-  const height = options.height + 120;
+  const height = options.height + 600;
 
   const tooltip = d3.select(container).select('#tooltip');
-
+  
   const svg = d3.select(container)
     .append('svg')
     .attr('width', width/2)
     .attr('height', height/2)
-    .style('z-index', 10)
-    .style('transform', 'translate(-540px,290px) rotate(180deg)');
+    .style('z-index', 50) // Increased z-index to be above all other elements
+    .style('position', 'absolute')
+    .style('left', '50%')
+    .style('top', '30%')
+    .style('transform', 'translate(-20%, -50%))')
+    .style('pointer-events', 'all');
+
+  // Create container for all visualization elements to better control positioning
+  const vizGroup = svg.append('g')
+    .attr('class', 'viz-container');
 
   const validLinks = topXI_data.links.filter(link => {
     return topXI_data.nodes.some(n => n.id === link.source) && 
@@ -271,35 +285,37 @@ function defaultNetwork(container, options = {}) {
     .force('center', d3.forceCenter(width / 10, height / 10))
     .on('tick', ticked);
 
-  const link = svg
-    .selectAll('line')
+  const link = vizGroup
+    .selectAll('.link')
     .data(validLinks)
-    .join('line')
-    .style('stroke', 'black')
-    .attr('stroke-width', d => d.value * 0.1);
+    .enter()
+    .append('line')
+    .attr('class', 'link')
+    .style('stroke', 'white') // Changed to white for better visibility
+    .style('stroke-opacity', 0.8) // Increased opacity
+    .attr('stroke-width', d => Math.max(2, d.value * 0.15)); // Increased minimum width and scaling
 
-    const node = svg.selectAll('.node')
-      .data(topXI_data.nodes)
-      .style('fill', 'steelblue')
-      .enter().append("g")
-      .attr("class", "node")
-      .style('stroke', '#aaa')
-      .on('mouseover', (event, d) => {
+  const node = vizGroup.selectAll('.node')
+    .data(topXI_data.nodes)
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .style('stroke', '#aaa')
+    .on('mouseover', (event, d) => {
+      const connected = validLinks
+        .filter(link => (link.source.id === d.id))
+        .map(link => {
+          const targetNode = topXI_data.nodes.find(n => (n.id === link.target.id));
+          return targetNode ? targetNode.name : 'Unknown';
+        });
 
-        const connected = validLinks
-          .filter(link => (link.source.id === d.id))
-          .map(link => {
-            const targetNode = topXI_data.nodes.find(n => (n.id === link.target.id));
-            return targetNode ? targetNode.name : 'Unknown';
-          });
-
-        const targetsText = connected.length ? connected.join(', ') : 'None';
-          
+      const targetsText = connected.length ? connected.join(', ') : 'None';
+        
       tooltip
         .style('opacity', 1)
         .html(`<strong>${d.name}</strong><br/>Targets: ${targetsText}`);
 
-        console.log(d.name + " " + "targetsText"); 
+      console.log(d.name + " " + "targetsText"); 
     })
     .on('mousemove', (event) => {
       tooltip
@@ -310,28 +326,28 @@ function defaultNetwork(container, options = {}) {
       tooltip.style('opacity', 0);
     });
 
-    node.append("image")
-      .attr("xlink:href", "white_jersey.png")
-      .attr("width", 50)
-      .attr("height", 50)
-      .attr('x', -33.5)
-      .attr('y', -41.5)
-      .style("transform", "rotate(180deg)")
-      .style("z-index", 8);
+  node.append("image")
+    .attr("xlink:href", jersey)
+    .attr("width", 140)
+    .attr("height", 140)
+    .attr('x', -33.5)
+    .attr('y', -41.5)
+    // .style("transform", "rotate(180deg)")
+    .style("z-index", 8);
 
-      node.append("text")
-      .text(d => d.name)    
-      .attr("text-anchor", "middle") 
-      .attr("dy", 20)    
-      .attr("dx", d => {
-        if (d.id === "LB"){
-          return 6;
-        }
-        return -10;
-      })            
-      .attr("font-size", "10px")   
-      .attr("fill", "black")
-      .style("transform", "rotate(180deg)");
+  node.append("text")
+    .text(d => d.name)    
+    .attr("text-anchor", "middle") 
+    .attr("dy", 20)    
+    .attr("dx", d => {
+      if (d.id === "LB"){
+        return 6;
+      }
+      return -10;
+    })            
+    .attr("font-size", "10px")   
+    .attr("fill", "black");
+    // .style("transform", "rotate(180deg)");
     
 
   topXI_data.nodes.forEach(node => {
@@ -363,48 +379,84 @@ function defaultNetwork(container, options = {}) {
 
 const TopPlayers = () => {
   const containerRef = useRef();
+  const vizRef = useRef(null);
 
   useEffect(() => {
-    if (containerRef.current) {
-      defaultNetwork(containerRef.current, { width: 1400, height: 900 });
+    // Prevent multiple initializations
+    if (containerRef.current && !vizRef.current) {
+      vizRef.current = defaultNetwork(containerRef.current, { width: 1200, height: 550 }); // Adjusted dimensions
+      
+      // Fine-tune the SVG position after it's created (only once)
+      setTimeout(() => {
+        const svg = d3.select(containerRef.current).select('svg');
+        if (svg.node()) {
+          // Adjusted transform to fix positioning issues - reduced rotation scaling
+          // svg.style('transform', 'translate(-70%, -20%) rotate(180deg) scale(0.7)');
+        }
+      }, 100);
     }
+    
+    // Cleanup function to prevent memory leaks
+    return () => {
+      if (vizRef.current) {
+        d3.select(containerRef.current).select('svg').remove();
+        vizRef.current = null;
+      }
+    };
   }, []);
 
   return (
-    <div ref={containerRef} style={{
+    <div 
+      className="tv-container"
+      ref={containerRef} 
+      style={{
         position: 'relative',
         width: '1200px',
-        height: '800px', 
-        backgroundImage: "url('/tv_screen.png')",
-        backgroundSize: "cover",
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-        zIndex: -5,
-        overflow: 'hidden',
-      }} >
-      <div
+        height: '800px',
+        margin: '40px auto',
+        overflow: 'visible',
+      }}
+    >
+      {/* TV Frame */}
+      <div 
+        className="tv-frame"
         style={{
           position: 'absolute',
-          top: 180,
-          left: 75,
-          width: '1000px',
-          height: '500px',
-          backgroundImage: "url('/football_pitch.png')",
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundColor: 'transparent',
-          pointerEvents: 'none',
-          zIndex: -2,
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '1050px',
+          height: '620px',
+          backgroundColor: 'rgba(34, 34, 34, 0.8)', // Made slightly transparent
+          borderRadius: '20px',
+          boxShadow: '0 0 30px rgba(0,0,0,0.4)',
+          padding: '20px',
+          border: '15px solid #111',
+          overflow: 'visible',
+          zIndex: 1,
         }}
-      />
-      <div style={{}}>
-
+      >
+        {/* Football Pitch inside TV frame */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            top: 0,
+            left: 0,
+            backgroundImage: `url(${football_pitch})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            pointerEvents: 'none',
+            zIndex: 5,
+            opacity: 0.9, // Reduced opacity to make links more visible
+          }}
+        />
       </div>
-
-      <div id="tooltip" style={{ position: 'absolute', opacity: 0 }} />
+      <div id="tooltip" style={{ position: 'absolute', opacity: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.8)', color: 'white', padding: '8px', borderRadius: '4px' }} />
     </div>
   );
 };
 
-
-export default TopPlayers; 
+export default TopPlayers;
