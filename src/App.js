@@ -20,6 +20,7 @@ import SplashScreen from './Components/SplashScreen';
 import './App.css';
 import Legacy from './Components/Legacy';
 import TopPlayers  from './Components/TopPlayers';
+import Studio from './Components/Studio';
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -343,15 +344,6 @@ export default function App() {
                 >
                   <h1>Early Success Line Chart</h1>
                 </div>
-                <Parallax translateY={[-10, 10]} style={{
-                        height: '100vh',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: 'white',
-                      }}>
-                    <TopPlayers />
-                </Parallax>
               </Parallax>
               <SantiagoScroll />
               <LostDominance />
@@ -363,6 +355,7 @@ export default function App() {
               <Ronaldo />
               <ELClasicoVis />
               <LostDominance />  
+              <Studio />
               <Legacy/>
             </div>
           </div>

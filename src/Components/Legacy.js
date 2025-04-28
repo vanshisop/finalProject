@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import museum from '../img/museum.jpg'
+import {Parallax } from 'react-scroll-parallax';
+import TopPlayers from './TopPlayers';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -159,7 +161,8 @@ const Legacy = () => {
         padding: '2rem',
         marginTop: '300px',
     }}>
-       <p>Joshin's custom</p>
+      <p>Joshin's custom</p>
+      
     </div>
   </div>
 

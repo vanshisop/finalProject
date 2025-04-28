@@ -256,26 +256,22 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
   const height = options.height + 600;
   
   const tooltip = d3.select(container).select('#tooltip');
-  
- //remove ALL d3 elements
 
   
+  // keep the container a little towards the lefts
   const svg = d3.select(container)
     .append('svg')
     .attr('width', width)
     .attr('height', height/2)
     .style('z-index', 3) 
     .style('position', 'absolute')
-    .style('left', '0')
-    .style('top', '0')
-    .style('transform', 'translate(0,0)')
+    .style('left', '30%')
+    .style('top', '35%')
+    .style('transform', 'translate(-490px, -400px)')
     .style('pointer-events', 'all');
 
   const vizGroup = svg.append('g')
     .attr('class', 'viz-container');
-
-
-  
 
   topXI_data.nodes.forEach(node => {
     const pos = form_positions.find(p => p.id === node.id);
@@ -317,12 +313,10 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
         const sourceName = topXI_data.nodes.find(n => n.id === sourceId).name;
         const targetName = topXI_data.nodes.find(n => n.id === targetId).name;
 
-        // Highlight the node
         node.style('opacity', nodeData =>
           (nodeData.id === sourceId || nodeData.id === targetId) ? 1 : 0
         );
       
-        // highlight the link
         link.style('opacity', l =>
           (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
         );
@@ -330,16 +324,15 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
         const [mouseX, mouseY] = d3.pointer(event);
 
         tooltip
-        .html(`<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`)
-        .style('left', `${mouseX}px`)
-        .style('top', `${mouseY - 30}px`)
-        .style('opacity', 1)
-        .transition()
-        .duration(50);      
+          .html(`<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`)
+          .style('left', `${mouseX + 4120}px`)
+          .style('top', `${mouseY + 320}px`)
+          .style('opacity', 1)
+          .transition()
+          .duration(50);      
 
         console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
       
-        // animate for 1 second
         setTimeout(() => {
           node.style('opacity', 1);
           link.style('opacity', 1);
@@ -362,20 +355,19 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
         link.style('opacity', l =>
           (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
         );
-      
+        
         const [mouseX, mouseY] = d3.pointer(event);
 
         tooltip
         .html(`<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`)
-        .style('left', `${mouseX + 10}px`)
-        .style('top', `${mouseY + 20}px`)
+        .style('left', `${mouseX}px`)
+        .style('top', `${mouseY}px`)
         .style('opacity', 1)
         .transition()
         .duration(50);      
 
         console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
       
-        // animate for 1 second
         setTimeout(() => {
           node.style('opacity', 1);
           link.style('opacity', 1);
@@ -426,7 +418,6 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
     .attr("font-size", "10px")   
     .attr("fill", "black")
     .style("z-index", 4);
-    
 
   function ticked() {
     link
@@ -434,11 +425,9 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
       .attr('y1', d => d.source.y)
       .attr('x2', d => d.target.x)
       .attr('y2', d => d.target.y);
-  
     node
       .attr('transform', d => `translate(${d.x},${d.y})`);
   }
-  
   return svg;
 }
 
@@ -453,14 +442,11 @@ const TopPlayers = () => {
   
   useEffect(() => {
     console.log(topXI_data);
-    
     if ((containerRef.current && !vizRef.current ) || checkXI) {
       vizRef.current = defaultNetwork(containerRef.current, { width: 2000, height: 550 }, handlePlayerClick);
     }
-
     const fetchPlayersData = async () => {
       try {
-       
         const data =  jsonFile;
         setPlayersData(data);
         setCheckXI(false)
@@ -476,6 +462,7 @@ const TopPlayers = () => {
     setSwapPlayerID(playerData.id);
     console.log(`Player clicked: ${playerData.name}`);
   };
+
   function handleSwap(player) {
     console.log("hi");
     
@@ -510,8 +497,6 @@ const TopPlayers = () => {
 
        setCheckXI(true);
 
-
-
       }
 
       topXI_data.nodes.push(  {
@@ -528,38 +513,18 @@ const TopPlayers = () => {
       }
       console.log(form_positions);
       console.log(topXI_data.links);
-      
-      
-
-
-
-
     });
-    
-    
-    // Perform the swap logic here
-    // For example, you can update the state or make an API call to save the changes
-
     setShowSubstitutes(false);
   }
   return (
-    <div
-      className="tv-container"
-      ref={containerRef}
-      style={{
-        position: 'relative',
-        width: '1200px',
-        height: '800px',
-        margin: '40px auto',
-        overflow: 'visible',
-      }}
-    >
+    <div className="tv-container"
+      ref={containerRef} >
       <div
         className="tv-frame"
         style={{
           position: 'absolute',
-          top: '50%',
-          left: '50%',
+          top: '33%',
+          left: '36%',
           transform: 'translate(-50%, -50%)',
           width: '1050px',
           height: '620px',
@@ -573,6 +538,7 @@ const TopPlayers = () => {
         }}
       >
         <div
+          onClick={() => setShowSubstitutes('')}
           style={{
             position: 'absolute',
             width: '100%',
@@ -586,7 +552,8 @@ const TopPlayers = () => {
             pointerEvents: 'none',
             zIndex: 2,
             opacity: 0.9,
-          }}
+          }
+        }
         />
         <div
           className={`substitutes-panel ${showSubstitutes ? 'show' : ''}`}
@@ -609,7 +576,7 @@ const TopPlayers = () => {
           }}
         >
           <div className="substitutes" style={{}}>
-            <h2 style={{ color: 'white', textAlign: 'center' }}>Substitutes</h2>
+            <h2 style={{ color: 'white', textAlign: 'left' }}>Substitutes</h2>
             <div
               className="substitutes-list" style={{ display: 'flex',justifyContent: 'space-around',flexWrap: 'wrap',padding: '10px'}}>
               {playersData && playersData.nodes ? (
@@ -637,7 +604,7 @@ const TopPlayers = () => {
                       </div>
                     ))
                 ) : (
-                  <div>Loading reserves...</div>
+                  <div></div>
                 )}
             </div>
             <div className="reserves" style={{}}>
@@ -658,6 +625,7 @@ const TopPlayers = () => {
                       <div
                         key={player.id}
                         className="reserve"
+                        onClick={() => handleSwap(player)}
                         style={{
                           backgroundColor: 'red',
                           color: 'white',
@@ -672,7 +640,7 @@ const TopPlayers = () => {
                       </div>
                     ))
                 ) : (
-                  <div>Loading reserves...</div>
+                  <div></div>
                 )}
               </div>
             </div>
