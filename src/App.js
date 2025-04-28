@@ -18,7 +18,9 @@ import UCL from './Components/UCL';
 import ELClasicoVis from './Components/ElClasicoVis';
 import SplashScreen from './Components/SplashScreen';
 import './App.css';
+import Legacy from './Components/Legacy';
 import TopPlayers  from './Components/TopPlayers';
+import Studio from './Components/Studio';
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -42,6 +44,7 @@ export default function App() {
 
   const handleSplashComplete = () => {
     setShowSplash(false);
+    setShowTimeLine(true)
   };
 
   const handleScroll = () => {
@@ -53,42 +56,79 @@ export default function App() {
 
     let newYear;
 
-    if (scrollPercent <= 0.08) {
+    if (scrollPercent <= 0.03) {
       setShowTimeLine(true);
       newYear = 1902;
-    } else if (scrollPercent > 0.08 && scrollPercent <= 0.16) {
-      setShowTimeLine(true);
+    } else if (scrollPercent > 0.03 && scrollPercent <= 0.06) {
       setst1(true);
       setct1(true);
       newYear = 1903;
-    } else if (scrollPercent > 0.16 && scrollPercent <= 0.24) {
-      setShowTimeLine(true);
+    } else if (scrollPercent > 0.06 && scrollPercent <= 0.09) {
       setct1(false);
       settp1(1);
       newYear = 1905;
-    } else if (scrollPercent > 0.24 && scrollPercent <= 0.40) {
+    } else if (scrollPercent > 0.09 && scrollPercent <= 0.15) {
       setShowTimeLine(false);
       const overlayScrollPercent = (scrollPercent - 0.75) / 0.25;
       setOverlayOpacity(Math.min(1, Math.max(0, overlayScrollPercent)));
-    } else if (scrollPercent > 0.48 && scrollPercent <= 0.56) {
+    } else if (scrollPercent > 0.18 && scrollPercent <= 0.24) {
+      newYear = 1921;
       setShowTimeLine(true);
       settp1(5);
-      newYear = 1921;
-    } else if (scrollPercent > 0.56 && scrollPercent <= 0.64) {
-      setShowTimeLine(true);
+    } else if (scrollPercent > 0.24 && scrollPercent <= 0.27) {
       setst2(true);
       setct2(true);
       newYear = 1927;
-    } else if (scrollPercent > 0.64 && scrollPercent <= 0.72) {
+    } else if (scrollPercent > 0.27 && scrollPercent <= 0.30) {
       setct2(false);
       setShowTimeLine(true);
       settp1(7);
       settp2(2);
-      newYear = 1927;
-    } else if (scrollPercent > 0.72 && scrollPercent < 0.92) {
+      newYear = 1943;
+    } else if (scrollPercent > 0.30 && scrollPercent <= 0.39) {
       setShowTimeLine(false);
-    } else {
-      setShowTimeLine(false);
+    } 
+    else if(scrollPercent > 0.39 && scrollPercent <= 0.44){
+      setShowTimeLine(true)
+      setst3(true)
+      settp1(17)
+      settp2(27)
+      settp3(7)
+      newYear = 1998
+    }
+    else if(scrollPercent > 0.44 && scrollPercent <= 0.48){
+      settp3(8)
+      newYear = 2000
+    }
+    else if(scrollPercent > 0.48 && scrollPercent <= 0.62){
+      setShowTimeLine(false)
+    }
+
+    else if(scrollPercent > 0.62 && scrollPercent <= 0.65){
+      setShowTimeLine(true)
+      newYear = 2012
+      settp1(18)
+      settp2(32)
+      settp3(9)
+    }
+    else if(scrollPercent > 0.65 && scrollPercent <= 0.68){
+      newYear = 2014
+      settp1(19)
+      settp2(32)
+      settp3(9)
+    }
+    else if(scrollPercent > 0.68 && scrollPercent <= 0.90){
+      setShowTimeLine(false)
+    }
+    else if(scrollPercent > 0.90 && scrollPercent <= 0.93){
+      setShowTimeLine(true)
+      newYear = 2025
+      settp1(20)
+      settp2(36)
+      settp3(15)
+    }
+    else{
+      setShowTimeLine(false)
     }
 
     newYear = Math.max(1900, Math.min(2025, newYear));
@@ -136,9 +176,8 @@ export default function App() {
 
   return (
     <ParallaxProvider>
-      {showSplash ? (
-        <SplashScreen onComplete={handleSplashComplete} />
-      ) : (
+      
+
         <div className="first-steps" style={{ position: "relative" }}>
           {showTimeLine && (
             <div
@@ -284,43 +323,7 @@ export default function App() {
                   </p>
                 </div>
               </Parallax>
-              <Parallax
-                translateY={[-20, 20]}
-                style={{
-                  height: "100vh",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: 0,
-                  padding: 0,
-                }}
-              >
-                <div
-                  style={{
-                    width: "60%",
-                    height: "100%",
-                  }}
-                >
-                  <h2>Real Madrid's 1930s and Spanish Civil War</h2>
-                  <p>
-                    During the early years of La Liga, Real Madrid quickly
-                    established itself as one of the dominant forces in Spanish
-                    football. The club won its first La Liga title in 1932,
-                    cementing its place as a leading team in the country.
-                    Despite the disruptions caused by the Spanish Civil War
-                    (1936-1939), Real Madrid emerged from the conflict stronger
-                    and more focused. Under the leadership of President Santiago
-                    Bernabéu, who took office in 1943, Madrid began to regain
-                    its form and build a foundation for future success. Between
-                    1930 and 1943, the club also claimed several Copa del Rey
-                    titles, with their triumph in 1943 standing out, where they
-                    famously defeated Barcelona 11-1 in the semi-finals. These
-                    early successes set the stage for the club's later dominance
-                    in Spanish and European football.
-                  </p>
-                </div>
-              </Parallax>
+              
               <Parallax
                 translateY={[-20, 20]}
                 style={{
@@ -341,15 +344,6 @@ export default function App() {
                 >
                   <h1>Early Success Line Chart</h1>
                 </div>
-                <Parallax translateY={[-10, 10]} style={{
-                        height: '100vh',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: 'white',
-                      }}>
-                    <TopPlayers />
-                </Parallax>
               </Parallax>
               <SantiagoScroll />
               <LostDominance />
@@ -360,10 +354,13 @@ export default function App() {
               <Ramos />
               <Ronaldo />
               <ELClasicoVis />
+              <LostDominance />  
+              <Studio />
+              <Legacy/>
             </div>
           </div>
         </div>
-      )}
+     
     </ParallaxProvider>
   );
 }
