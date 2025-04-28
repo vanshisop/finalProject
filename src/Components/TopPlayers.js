@@ -258,7 +258,6 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
   const tooltip = d3.select(container).select('#tooltip');
 
   
-  // keep the container a little towards the lefts
   const svg = d3.select(container)
     .append('svg')
     .attr('width', width)
@@ -313,6 +312,8 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
         const sourceName = topXI_data.nodes.find(n => n.id === sourceId).name;
         const targetName = topXI_data.nodes.find(n => n.id === targetId).name;
 
+
+        // Highlight the node
         node.style('opacity', nodeData =>
           (nodeData.id === sourceId || nodeData.id === targetId) ? 1 : 0
         );
@@ -332,7 +333,6 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
           .duration(50);      
 
         console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
-      
         setTimeout(() => {
           node.style('opacity', 1);
           link.style('opacity', 1);
@@ -355,7 +355,6 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
         link.style('opacity', l =>
           (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
         );
-        
         const [mouseX, mouseY] = d3.pointer(event);
 
         tooltip
@@ -496,7 +495,6 @@ const TopPlayers = () => {
         }
 
        setCheckXI(true);
-
       }
 
       topXI_data.nodes.push(  {
