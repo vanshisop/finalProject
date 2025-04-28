@@ -9,6 +9,7 @@ import Ramos from './Components/Ramos';
 import CopaDelRey from './Components/CopaDelRey';
 import SantiagoScroll from './Components/Santiago';
 import FirstPhoto from './Components/FirstPhoto';
+import Dominance from './Components/Dominance';
 import LostDominance from './Components/Lost Dominance';
 import Galacticos from './Components/Galacticos';
 import GalacticoPhotos from './Components/GalacticoPhotos';
@@ -20,7 +21,9 @@ import SplashScreen from './Components/SplashScreen';
 import './App.css';
 import Legacy from './Components/Legacy';
 import TopPlayers  from './Components/TopPlayers';
+
 import Studio from './Components/Studio';
+import Gallery from './Components/Gallery';
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -347,6 +350,7 @@ export default function App() {
               </Parallax>
               <SantiagoScroll />
               <LostDominance />
+              <Dominance />
               <Galacticos />
               <GalacticoPhotos />
               <GalacticoVis />
@@ -356,7 +360,8 @@ export default function App() {
               <ELClasicoVis />
               <LostDominance />  
               <Studio />
-              <Legacy/>
+              {/* <Legacy/> */}
+              <Gallery />
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import EuropeUCLs from './UCLMa';
 
 import ramos from '../img/ramosss.jpg'
 import ladecima from '../img/ladecima.jpeg'
@@ -109,11 +110,7 @@ const Ramos = () => {
       }} >
         <h1>Real Madrid's UCL wins data vis map</h1>
       </div>
-
-
- 
-  
-        
+      <EuropeUCLs/>
     </div>
   );
 };

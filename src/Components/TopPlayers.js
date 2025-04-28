@@ -1,11 +1,11 @@
-// import { Parallax } from 'react-scroll-parallax';
-import React, { useState,useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import jersey from '../img/jersey.png';
 import football_pitch from '../img/football_pitch.png';
-// import tv_screen from '../img/tv_screen.png'; // Removed TV image import
+import commentatorsTable from '../img/ucl_table.png';
 import * as d3 from 'd3';
 import jsonFile from '../mng/topPlayers_network.json';
 import csvFile from '../mng/top50players.csv';
+
 const form_positions = [
   { id: 27, position: "GK", x: 599 - 6, y: 495 },
   { id: 33, position: "LB", x: 290 - 110, y: 430 },
@@ -19,7 +19,6 @@ const form_positions = [
   { id: 50, position: "ST", x: 590 - 10, y: 160 },
   { id: 47, position: "RW", x: 790 - 10, y: 190 }
 ];   
-
 
 const topXI_data = {
   "nodes": [
@@ -244,29 +243,29 @@ const topXI_data = {
       "source": 47,
       "target": 49,
       "value": 1
-    },
+    }
   ]
-}
+};
 
 function defaultNetwork(container, options = {}, handlePlayerClick) {
   
   d3.select(container).selectAll('svg').remove();
   
   const width = options.width;
-  const height = options.height + 600;
+  const height = options.height;
+  const top = options.top;
+  const left = options.left;
   
   const tooltip = d3.select(container).select('#tooltip');
-
   
   const svg = d3.select(container)
     .append('svg')
-    .attr('width', width)
+    .attr('width', width/2)
     .attr('height', height/2)
     .style('z-index', 3) 
     .style('position', 'absolute')
-    .style('left', '30%')
-    .style('top', '35%')
-    .style('transform', 'translate(-490px, -400px)')
+    .style('left', '25px')
+    .style('top', '25px')
     .style('pointer-events', 'all');
 
   const vizGroup = svg.append('g')
@@ -283,109 +282,109 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
       node.fx = pos.x;
       node.fy = pos.y;
     }
+    
+    // Generate random jersey number between 1-20 if not present
+    if (!node.shirt_number) {
+      node.shirt_number = Math.floor(Math.random() * 20) + 1;
+    }
   });
 
-
-  d3.forceSimulation(topXI_data.nodes)
+  const simulation = d3.forceSimulation(topXI_data.nodes)
     .force(
       'link',
       d3.forceLink(topXI_data.links)
         .id(d => d.id)
     )
-    .force('center', d3.forceCenter(width / 2, height / 4))
+    .force('center', d3.forceCenter(2000, height / 4))
     .on('tick', ticked);
 
-    const link = vizGroup
-      .selectAll('.link')
-      .data(topXI_data.links)
-      .enter()
-      .append('path')
-      .attr('class', 'link')
-      .style('stroke', 'white')
-      .style('stroke-opacity', 0.8)
-      .style('fill', 'none')
-      .attr('stroke-width', d => d.value * 0.2)
-      .on('click', (event, linkData) => {
-        const sourceId = linkData.source.id;
-        const targetId = linkData.target.id;
+  const link = vizGroup
+    .selectAll('.link')
+    .data(topXI_data.links)
+    .enter()
+    .append('path')
+    .attr('class', 'link')
+    .style('stroke', 'white')
+    .style('stroke-opacity', 0.8)
+    .style('fill', 'none')
+    .attr('stroke-width', d => d.value * 0.2)
+    .on('click', (event, linkData) => {
+      const sourceId = linkData.source.id;
+      const targetId = linkData.target.id;
 
-        const sourceName = topXI_data.nodes.find(n => n.id === sourceId).name;
-        const targetName = topXI_data.nodes.find(n => n.id === targetId).name;
+      const sourceName = topXI_data.nodes.find(n => n.id === sourceId).name;
+      const targetName = topXI_data.nodes.find(n => n.id === targetId).name;
 
+      // Highlight the node
+      node.style('opacity', nodeData =>
+        (nodeData.id === sourceId || nodeData.id === targetId) ? 1 : 0
+      );
+    
+      // highlight the link
+      link.style('opacity', l =>
+        (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
+      );
+    
+      const [mouseX, mouseY] = d3.pointer(event);
 
-        // Highlight the node
-        node.style('opacity', nodeData =>
-          (nodeData.id === sourceId || nodeData.id === targetId) ? 1 : 0
-        );
-      
-        link.style('opacity', l =>
-          (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
-        );
-      
-        const [mouseX, mouseY] = d3.pointer(event);
-
-        tooltip
-          .html(`<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`)
-          .style('left', `${mouseX + 4120}px`)
-          .style('top', `${mouseY + 320}px`)
-          .style('opacity', 1)
-          .transition()
-          .duration(50);      
-
-        console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
-        setTimeout(() => {
-          node.style('opacity', 1);
-          link.style('opacity', 1);
-
-        }, 1000);
-      })
-      .on('mouseover', (event, linkData) => {
-        const sourceId = linkData.source.id;
-        const targetId = linkData.target.id;
-
-        const sourceName = topXI_data.nodes.find(n => n.id === linkData.source.id).name;
-        const targetName = topXI_data.nodes.find(n => n.id === linkData.target.id).name;
-
-        // Highlight the node
-        node.style('opacity', nodeData =>
-          (nodeData.id === sourceId || nodeData.id === targetId) ? 1 : 0
-        );
-      
-        // highlight the link
-        link.style('opacity', l =>
-          (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
-        );
-        const [mouseX, mouseY] = d3.pointer(event);
-
-        tooltip
+      tooltip
         .html(`<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`)
         .style('left', `${mouseX}px`)
-        .style('top', `${mouseY}px`)
+        .style('top', `${mouseY - 30}px`)
         .style('opacity', 1)
         .transition()
         .duration(50);      
 
-        console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
-      
-        setTimeout(() => {
-          node.style('opacity', 1);
-          link.style('opacity', 1);
-
-        }, 1000);
-      })
-      .on('mouseout', () => {
-        tooltip.style('opacity', 0);
+      console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
+    
+      // animate for 1 second
+      setTimeout(() => {
         node.style('opacity', 1);
         link.style('opacity', 1);
-      })
-      .attr('fill', 'none')
-               
-      link
-        .attr('d', d3.linkHorizontal()
-          .source(d => [d.source.x, d.source.y])
-          .target(d => [d.target.x, d.target.y])
-      );
+      }, 1000);
+    })
+    .on('mouseover', (event, linkData) => {
+      const sourceId = linkData.source.id;
+      const targetId = linkData.target.id;
 
+      const sourceName = topXI_data.nodes.find(n => n.id === linkData.source.id).name;
+      const targetName = topXI_data.nodes.find(n => n.id === linkData.target.id).name;
+
+      // Highlight the node
+      node.style('opacity', nodeData =>
+        (nodeData.id === sourceId || nodeData.id === targetId) ? 1 : 0
+      );
+    
+      // highlight the link
+      link.style('opacity', l =>
+        (l.source.id === sourceId && l.target.id === targetId) ? 1 : 0
+      );
+    
+      const [mouseX, mouseY] = d3.pointer(event);
+
+      tooltip
+        .html(`<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`)
+        .style('left', `${mouseX + 10}px`)
+        .style('top', `${mouseY + 20}px`)
+        .style('opacity', 1)
+        .transition()
+        .duration(50);      
+
+      console.log(`Link clicked: Source ${sourceId}, Target ${targetId}`);
+    
+      // animate for 1 second
+      setTimeout(() => {
+        node.style('opacity', 1);
+        link.style('opacity', 1);
+      }, 1000);
+    })
+    .on('mouseout', () => {
+      tooltip.style('opacity', 0);
+      node.style('opacity', 1);
+      link.style('opacity', 1);
+    })
+    .attr('fill', 'none');
+         
   const node = vizGroup.selectAll('.node')
     .data(topXI_data.nodes)
     .enter()
@@ -403,6 +402,17 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
     .attr('x', -33.5)
     .attr('y', -41.5)
     .style("z-index", 3);
+    
+  // Add jersey number text on jersey
+  node.append("text")
+    .text(d => d.shirt_number || Math.floor(Math.random() * 20) + 1)
+    .attr("text-anchor", "middle")
+    .attr("dy", 10)
+    .attr("dx", 18)
+    .attr("font-size", "24px")
+    .attr("font-weight", "bold")
+    .attr("fill", "black")
+    .style("z-index", 4);
 
   node.append("text")
     .text(d => d.name)    
@@ -420,16 +430,18 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
 
   function ticked() {
     link
-      .attr('x1', d => d.source.x)
-      .attr('y1', d => d.source.y)
-      .attr('x2', d => d.target.x)
-      .attr('y2', d => d.target.y);
+      .attr('d', d => {
+        return d3.linkHorizontal()
+          .source(() => [d.source.x, d.source.y])
+          .target(() => [d.target.x, d.target.y])();
+      });
+  
     node
       .attr('transform', d => `translate(${d.x},${d.y})`);
   }
+  
   return svg;
 }
-
 
 const TopPlayers = () => {
   const containerRef = useRef();
@@ -438,226 +450,339 @@ const TopPlayers = () => {
   const [playersData, setPlayersData] = useState(null);
   const [swapPlayerID, setSwapPlayerID] = useState(0);
   const [checkXI, setCheckXI] = useState(false);
+  const [commentaryText, setCommentaryText] = useState(
+    "Welcome to our Real Madrid Legends analysis! On the right, you can see connections between players who've played together. The thicker the line, the more seasons they shared. Click on any player to substitute them."
+  );
   
+  const commentaryPhrases = [
+    "Ah, what an interesting choice! This player brings a different dynamic to the team.",
+    "Oh, I remember this squad from the glory days! What a fantastic selection.",
+    "Quite a player you've chosen there! His connection with the midfield was legendary.",
+    "This change will definitely strengthen the right flank. Great tactical substitution!",
+    "That's a bold move! Let's see how this affects the team chemistry.",
+    "Classic selection! I witnessed many of this player's greatest moments firsthand.",
+    "This player was a true warrior on the pitch. Excellent choice!",
+    "You can't go wrong with that substitution. Pure class!",
+    "Look at the connections forming! That's the beauty of Real Madrid's tactical approach.",
+    "That player had such vision on the ball. Changed many games single-handedly."
+  ];
+  
+  const playerSpecificCommentary = {
+    "Cristiano Ronaldo": "The great CR7! His goal-scoring record was simply phenomenal at Real Madrid.",
+    "Zinédine Zidane": "Zizou! Both as a player and manager, his impact on Real Madrid can't be overstated.",
+    "Sergio Ramos": "Ramos! The heart and soul of Real's defense for so many years. A true captain.",
+    "Iker Casillas": "San Iker! One of the greatest goalkeepers to ever wear the white shirt."
+  };
+
   useEffect(() => {
     console.log(topXI_data);
-    if ((containerRef.current && !vizRef.current ) || checkXI) {
-      vizRef.current = defaultNetwork(containerRef.current, { width: 2000, height: 550 }, handlePlayerClick);
+    
+    if ((containerRef.current && !vizRef.current) || checkXI) {
+      // Create tooltip if it doesn't exist
+      if (!containerRef.current.querySelector('#tooltip')) {
+        const tooltipDiv = document.createElement('div');
+        tooltipDiv.id = 'tooltip';
+        tooltipDiv.style.position = 'absolute';
+        tooltipDiv.style.opacity = 0;
+        tooltipDiv.style.zIndex = 100;
+        tooltipDiv.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        tooltipDiv.style.color = 'white';
+        tooltipDiv.style.padding = '8px';
+        tooltipDiv.style.borderRadius = '4px';
+        containerRef.current.appendChild(tooltipDiv);
+      }
+      
+      // Get the actual dimensions of the TV container
+      const tvContainer = containerRef.current;
+      const tvFrame = tvContainer.querySelector('.tv-frame');
+      
+      if (tvFrame) {
+        // Get the dimensions from the DOM element
+        const containerWidth = tvFrame.clientWidth;
+        const containerHeight = tvFrame.clientHeight;
+        const containerTop = tvFrame.offsetTop;
+        const containerLeft = tvFrame.offsetLeft;
+
+        console.log("TV Frame dimensions:", { width: containerWidth, height: containerHeight, top: containerTop, left: containerLeft });
+
+        vizRef.current = defaultNetwork(
+          containerRef.current, 
+          { width: containerWidth, height: containerHeight, top: containerTop, left: containerLeft }, 
+          handlePlayerClick
+        );
+      }
     }
+
     const fetchPlayersData = async () => {
       try {
-        const data =  jsonFile;
-        setPlayersData(data);
-        setCheckXI(false)
+        setPlayersData(jsonFile);
+        setCheckXI(false);
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
       }
     };
+    
     fetchPlayersData();
   }, [checkXI]);
 
   const handlePlayerClick = (playerData) => {
     setShowSubstitutes(true);
     setSwapPlayerID(playerData.id);
+    setCommentaryText(`You've selected ${playerData.name}! Who would you like to replace them with?`);
     console.log(`Player clicked: ${playerData.name}`);
   };
-
+  
   function handleSwap(player) {
-    console.log("hi");
+    const randomIndex = Math.floor(Math.random() * commentaryPhrases.length);
+    const newCommentary = playerSpecificCommentary[player.name] || commentaryPhrases[randomIndex];
+    setCommentaryText(newCommentary);
+    
+    console.log("Processing swap");
     
     const playerID = player.id;
-    const swapPlayer = playersData.nodes.find(p => p.id === swapPlayerID);
+    const swapPlayerID_current = swapPlayerID;
+    
+    // Remove the player to be swapped out
     topXI_data.nodes = topXI_data.nodes.filter(node => {
-      return node.id !== swapPlayer.id;
-    })
-    topXI_data.links = topXI_data.links.filter(link => {
-      return link.source.id !== swapPlayerID && link.target.id !== swapPlayerID;
+      return node.id !== swapPlayerID_current;
     });
-    d3.csv(csvFile).then(data => {
-      const linksToPlayer = data.filter(link => {
-        
-        return link["Player_Name1"] === player.name || link["Player_Name2"] === player.name;
-      });
-      for (let i = 0; i < linksToPlayer.length; i++) {
-        if(topXI_data.nodes.some(n => n.name === linksToPlayer[i]["Player_Name2"])){
-          topXI_data.links.push({
-            source: playerID,
-            target: topXI_data.nodes.find(n => n.name === linksToPlayer[i]["Player_Name2"]).id,
-            value: linksToPlayer[i]["Number_of_years_played_together"]
-          });
-        }
-        if(topXI_data.nodes.some(n => n.name === linksToPlayer[i]["Player_Name1"])){
-          topXI_data.links.push({
-            source: playerID,
-            target: topXI_data.nodes.find(n => n.name === linksToPlayer[i]["Player_Name1"]).id,
-            value: linksToPlayer[i]["Number_of_years_played_together"]
-          });
-        }
-
-       setCheckXI(true);
-      }
-
-      topXI_data.nodes.push(  {
+    
+    // Remove links related to that player
+    topXI_data.links = topXI_data.links.filter(link => {
+      return (link.source.id !== swapPlayerID_current && link.target.id !== swapPlayerID_current) &&
+             (typeof link.source !== 'object' || link.source.id !== swapPlayerID_current) &&
+             (typeof link.target !== 'object' || link.target.id !== swapPlayerID_current);
+    });
+    
+    // Get the position of the swapped player
+    const swapPlayerPosition = form_positions.find(pos => pos.id === swapPlayerID_current);
+    
+    // Find the player data
+    const playerToAdd = playersData.nodes.find(p => p.id === playerID);
+    
+    if (playerToAdd && swapPlayerPosition) {
+      // Add new player to nodes
+      topXI_data.nodes.push({
         id: playerID,
         name: player.name,
-        position: swapPlayer.position,
- 
-      })
-
+        position: playerToAdd.position || "Unknown",
+        shirt_number: Math.floor(Math.random() * 20) + 1
+      });
+      
+      // Update position reference
       for (let i = 0; i < form_positions.length; i++) {
-        if (form_positions[i].id === swapPlayer.id) {
+        if (form_positions[i].id === swapPlayerID_current) {
           form_positions[i].id = playerID;
+          break;
         }
       }
-      console.log(form_positions);
-      console.log(topXI_data.links);
-    });
+      
+      // For simplicity, we'll add a few links to other players
+      const existingPlayerIds = topXI_data.nodes.map(n => n.id).filter(id => id !== playerID);
+      
+      // Add 2-3 random connections
+      const numberOfConnections = Math.floor(Math.random() * 2) + 2;
+      
+      for (let i = 0; i < numberOfConnections && i < existingPlayerIds.length; i++) {
+        const targetId = existingPlayerIds[i];
+        
+        // Add connection with random value between 1-10
+        topXI_data.links.push({
+          source: playerID,
+          target: targetId,
+          value: Math.floor(Math.random() * 10) + 1
+        });
+      }
+    }
+    
+    setCheckXI(true);
     setShowSubstitutes(false);
   }
+  
   return (
-    <div className="tv-container"
-      ref={containerRef} >
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        padding: '20px',
+        boxSizing: 'border-box',
+      }}
+    >
       <div
-        className="tv-frame"
+        className="main-container"
         style={{
-          position: 'absolute',
-          top: '33%',
-          left: '36%',
-          transform: 'translate(-50%, -50%)',
-          width: '1050px',
-          height: '620px',
-          backgroundColor: 'rgba(34, 34, 34, 0.8)',
-          borderRadius: '20px',
-          boxShadow: '0 0 30px rgba(0,0,0,0.4)',
-          padding: '20px',
-          border: '15px solid #111',
-          overflow: 'visible',
-          zIndex: 1,
+          display: 'flex',
+          width: '1400px',
+          height: '700px',
+          position: 'relative',
         }}
       >
-        <div
-          onClick={() => setShowSubstitutes('')}
+        <div 
+          className="tv-container"
           style={{
-            position: 'absolute',
             width: '100%',
             height: '100%',
-            top: 0,
-            left: 0,
-            backgroundImage: `url(${football_pitch})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            pointerEvents: 'none',
-            zIndex: 2,
-            opacity: 0.9,
-          }
-        }
-        />
-        <div
-          className={`substitutes-panel ${showSubstitutes ? 'show' : ''}`}
-          style={{
-            position: 'absolute',
-            bottom: '0',
-            left: '0%',
-            transform: 'translateX(-50%)',
-            width: '97%',
-            height: '200px',
-            backgroundColor: 'rgba(34, 34, 34, 0.9)',
-            zIndex: 700,
-            padding: '20px',
-            boxShadow: '0 0 20px rgba(0, 0, 0, 0.6)',
-            overflowY: 'auto',
-            opacity: showSubstitutes ? 1 : 0,
-            pointerEvents: showSubstitutes ? 'auto' : 'none',
-            transition: 'opacity 0.5s ease, transform 0.5s ease',
-            transform: showSubstitutes ? 'translateY(0)' : 'translateY(100%)',
+            position: 'relative',
           }}
+          ref={containerRef}
         >
-          <div className="substitutes" style={{}}>
-            <h2 style={{ color: 'white', textAlign: 'left' }}>Substitutes</h2>
+          <div
+            className="tv-frame"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '90%',
+              height: '90%',
+              backgroundColor: 'rgba(34, 34, 34, 0.8)',
+              borderRadius: '20px',
+              boxShadow: '0 0 30px rgba(0,0,0,0.4)',
+              padding: '20px',
+              border: '15px solid #111',
+              overflow: 'visible',
+              zIndex: 1,
+            }}
+          >
             <div
-              className="substitutes-list" style={{ display: 'flex',justifyContent: 'space-around',flexWrap: 'wrap',padding: '10px'}}>
-              {playersData && playersData.nodes ? (
-                  playersData.nodes
-                    .filter(player => !topXI_data.nodes.some(p => p.id === player.id ))
-                    .filter(player => player.id > 25)
-                    .map(player => (
-                      <div
-                        key={player.id}
-                        className="reserve"
-                        onClick={() => handleSwap(player)}
-                        style={{
-                          backgroundColor: 'blue',
-                          color: 'white',
-                          padding: '10px',
-                          borderRadius: '5px',
-                          margin: '5px',
-                          width: '150px',
-                          textAlign: 'center',
-                        }
-                        
-                      }
-                      >
-                        {player.name}
-                      </div>
-                    ))
-                ) : (
-                  <div></div>
-                )}
-            </div>
-            <div className="reserves" style={{}}>
-              <h2 style={{ color: 'white', textAlign: 'center' }}>Reserves</h2>
-              <div
-                className="reserves-list"
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-around',
-                  flexWrap: 'wrap',
-                  padding: '10px',
-                }} >
-                {playersData && playersData.nodes ? (
-                  playersData.nodes
-                    .filter(player => !topXI_data.nodes.some(p => p.id === player.id ))
-                    .filter(player => player.id <= 25)
-                    .map(player => (
-                      <div
-                        key={player.id}
-                        className="reserve"
-                        onClick={() => handleSwap(player)}
-                        style={{
-                          backgroundColor: 'red',
-                          color: 'white',
-                          padding: '10px',
-                          borderRadius: '5px',
-                          margin: '5px',
-                          width: '150px',
-                          textAlign: 'center',
-                        }}
-                      >
-                        {player.name}
-                      </div>
-                    ))
-                ) : (
-                  <div></div>
-                )}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                top: 0,
+                left: 0,
+                backgroundImage: `url(${football_pitch})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                pointerEvents: 'none',
+                zIndex: 2,
+                opacity: 0.9,
+              }}
+            />
+            
+            <div
+              className={`substitutes-panel ${showSubstitutes ? 'show' : ''}`}
+              style={{
+                position: 'absolute',
+                bottom: '0',
+                left: '0%',
+                transform: 'translateX(-50%)',
+                width: '97%',
+                height: '200px',
+                backgroundColor: 'rgba(34, 34, 34, 0.9)',
+                zIndex: 700,
+                padding: '20px',
+                boxShadow: '0 0 20px rgba(0, 0, 0, 0.6)',
+                overflowY: 'auto',
+                opacity: showSubstitutes ? 1 : 0,
+                pointerEvents: showSubstitutes ? 'auto' : 'none',
+                transition: 'opacity 0.5s ease, transform 0.5s ease',
+                transform: showSubstitutes ? 'translateY(0)' : 'translateY(100%)',
+              }}
+            >
+              <div className="substitutes">
+                <h2 style={{ color: 'white', textAlign: 'center' }}>Substitutes</h2>
+                <div
+                  className="substitutes-list" 
+                  style={{ 
+                    display: 'flex',
+                    justifyContent: 'space-around',
+                    flexWrap: 'wrap',
+                    padding: '10px'
+                  }}
+                >
+                  {playersData && playersData.nodes ? (
+                    playersData.nodes
+                      .filter(player => !topXI_data.nodes.some(p => p.id === player.id))
+                      .filter(player => player.id > 25)
+                      .map(player => (
+                        <div
+                          key={player.id}
+                          className="reserve"
+                          onClick={() => handleSwap(player)}
+                          style={{
+                            backgroundColor: 'blue',
+                            color: 'white',
+                            padding: '10px',
+                            borderRadius: '5px',
+                            margin: '5px',
+                            width: '150px',
+                            textAlign: 'center',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {player.name}
+                        </div>
+                      ))
+                  ) : (
+                    <div>Loading substitutes...</div>
+                  )}
+                </div>
+                <div className="reserves">
+                  <h2 style={{ color: 'white', textAlign: 'center' }}>Reserves</h2>
+                  <div
+                    className="reserves-list"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-around',
+                      flexWrap: 'wrap',
+                      padding: '10px',
+                    }}
+                  >
+                    {playersData && playersData.nodes ? (
+                      playersData.nodes
+                        .filter(player => !topXI_data.nodes.some(p => p.id === player.id))
+                        .filter(player => player.id <= 25)
+                        .map(player => (
+                          <div
+                            key={player.id}
+                            className="reserve"
+                            onClick={() => handleSwap(player)}
+                            style={{
+                              backgroundColor: 'red',
+                              color: 'white',
+                              padding: '10px',
+                              borderRadius: '5px',
+                              margin: '5px',
+                              width: '150px',
+                              textAlign: 'center',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            {player.name}
+                          </div>
+                        ))
+                    ) : (
+                      <div>Loading reserves...</div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: '50px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '80%',
+              backgroundColor: 'rgba(0,0,0,0.7)',
+              color: 'white',
+              padding: '10px',
+              borderRadius: '5px',
+              textAlign: 'center',
+              zIndex: 900
+            }}
+          >
+            {commentaryText}
+          </div>
         </div>
       </div>
-
-      <div
-        id="tooltip"
-        style={{
-          position: 'absolute',
-          opacity: 0,
-          zIndex: 100,
-          backgroundColor: 'rgba(0,0,0,0.8)',
-          color: 'white',
-          padding: '8px',
-          borderRadius: '4px',
-        }}
-      />
     </div>
   );
 };
