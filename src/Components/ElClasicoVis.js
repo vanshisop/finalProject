@@ -14,13 +14,14 @@ const ELClasicoVis = () => {
   const sectionRef = useRef(null);
   const leftRef = useRef(null);
   const rightRef = useRef(null);
-  const textRef = useRef(null); //
+  const textRef = useRef(null);
   const pitchref = useRef(null);
   const [data, setData] = useState([]);
   const statsRefLeft = useRef(null);
   const statsRefRight = useRef(null);
   const controlsRef = useRef(null);
-  const [stats, setStats] = useState({ 
+  const filterBarRef = useRef(null);
+  const [stats, setStats] = useState({
     realMadrid: { wins: 0, losses: 0, draws: 0 },
     barcelona: { wins: 0, losses: 0, draws: 0 }
   });
@@ -28,13 +29,15 @@ const ELClasicoVis = () => {
   const [animationSpeed, setAnimationSpeed] = useState(1); // Animation speed multiplier
   const [isPlaying, setIsPlaying] = useState(false);
   const animationRef = useRef(null);
+  const [filter, setFilter] = useState('all');
+
   const calculateStats = (count) => {
     const visibleData = data.slice(0, count);
     const newStats = {
       realMadrid: { wins: 0, losses: 0, draws: 0 },
       barcelona: { wins: 0, losses: 0, draws: 0 }
     };
-    
+
     visibleData.forEach(match => {
       if (match.Winner === 'Real Madrid') {
         newStats.realMadrid.wins++;
@@ -47,7 +50,7 @@ const ELClasicoVis = () => {
         newStats.barcelona.draws++;
       }
     });
-    
+
     return newStats;
   };
 
@@ -60,12 +63,13 @@ const ELClasicoVis = () => {
   // Reset function for control bar
   const resetVisualization = () => {
     setDisplayCount(0);
-    setStats({ 
+    setStats({
       realMadrid: { wins: 0, losses: 0, draws: 0 },
       barcelona: { wins: 0, losses: 0, draws: 0 }
     });
     setIsPlaying(false);
     setAnimationSpeed(1);
+    setFilter('all');
     if (animationRef.current) {
       clearInterval(animationRef.current);
       animationRef.current = null;
@@ -77,17 +81,17 @@ const ELClasicoVis = () => {
     if (animationRef.current) {
       clearInterval(animationRef.current);
     }
-    
+
     setIsPlaying(true);
     let currentSpeed = animationSpeed;
-    
+
     const animate = () => {
       // Increase speed every 5 data points
       if (displayCount > 0 && displayCount % 5 === 0 && currentSpeed < 25) {
         currentSpeed = Math.min(currentSpeed + 2, 25); // Increase in steps of 2, max 25x
         setAnimationSpeed(currentSpeed);
       }
-      
+
       setDisplayCount(prevCount => {
         if (prevCount < 217) {
           const newCount = prevCount + 1;
@@ -101,7 +105,7 @@ const ELClasicoVis = () => {
         }
       });
     };
-    
+
     // Adjust interval based on speed (lower ms = faster)
     const baseInterval = 300; // Base speed in ms
     animationRef.current = setInterval(animate, baseInterval / currentSpeed);
@@ -117,7 +121,6 @@ const ELClasicoVis = () => {
   };
 
   useEffect(() => {
-  
     const ctx = gsap.context(() => {
       Papa.parse(clasicodata, {
         download: true,
@@ -138,7 +141,7 @@ const ELClasicoVis = () => {
       });
 
       gsap.fromTo(leftRef.current,
-        { x: "-100%" },  
+        { x: "-100%" },
         {
           x: "0%",
           ease: "power1.out",
@@ -184,7 +187,7 @@ const ELClasicoVis = () => {
         }
       );
 
-      gsap.fromTo(pitchref.current ,
+      gsap.fromTo(pitchref.current,
         { opacity: 0, scale: 0.5 },
         {
           opacity: 1,
@@ -209,7 +212,7 @@ const ELClasicoVis = () => {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "+=300%", 
+            end: "+=300%",
             scrub: true,
           }
         }
@@ -225,7 +228,7 @@ const ELClasicoVis = () => {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "+=300%", 
+            end: "+=300%",
             scrub: true,
           }
         }
@@ -241,7 +244,23 @@ const ELClasicoVis = () => {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "+=300%", 
+            end: "+=300%",
+            scrub: true,
+          }
+        }
+      );
+
+      gsap.fromTo(filterBarRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          ease: "power2.out",
+          duration: 1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "+=300%",
             scrub: true,
           }
         }
@@ -264,12 +283,12 @@ const ELClasicoVis = () => {
           if (prevCount < 217) {
             const newCount = prevCount + 1;
             setStats(calculateStats(newCount));
-            
+
             // Increase speed every 5 data points
             if (newCount % 5 === 0 && animationSpeed < 25) {
               setAnimationSpeed(prev => Math.min(prev + 2, 25));
             }
-            
+
             return newCount;
           } else {
             setIsPlaying(false);
@@ -280,7 +299,7 @@ const ELClasicoVis = () => {
         });
       }, baseInterval / animationSpeed);
     }
-    
+
     return () => {
       if (animationRef.current) {
         clearInterval(animationRef.current);
@@ -288,16 +307,29 @@ const ELClasicoVis = () => {
     };
   }, [animationSpeed, isPlaying]);
 
+  const getFilteredData = () => {
+    if (filter === 'all') {
+      return data.slice(0, displayCount);
+    } else {
+      return data.slice(0, displayCount).filter(item => {
+        if (filter === 'madrid') return item.Winner === 'Real Madrid';
+        if (filter === 'barca') return item.Winner === 'Barcelona';
+        if (filter === 'draw') return item.Winner === 'Draw' || !item.Winner;
+        return true;
+      });
+    }
+  };
+
   return (
-    <div ref={sectionRef} style={{ height: '100vh', position: 'relative', overflow: 'hidden' , backgroundImage: `url(${bg})`,}}>
-      
+    <div ref={sectionRef} style={{ height: '100vh', position: 'relative', overflow: 'hidden', backgroundImage: `url(${bg})`, }}>
+
       {/* Left Side */}
       <div ref={leftRef} style={{
         position: 'absolute',
         top: 0,
         left: 0,
         height: '100%',
-        width: '50%',
+        width: '40%',
         backgroundImage: `url(${elclasico})`,
         backgroundSize: '200% 100%',
         backgroundPosition: 'left center',
@@ -311,7 +343,7 @@ const ELClasicoVis = () => {
         top: 0,
         right: 0,
         height: '100%',
-        width: '50%',
+        width: '40%',
         backgroundImage: `url(${elclasico})`,
         backgroundSize: '200% 100%',
         backgroundPosition: 'right center',
@@ -326,44 +358,45 @@ const ELClasicoVis = () => {
         alt="El Clasico Text"
         style={{
           position: 'absolute',
-          top: '5%', // You can adjust this to where you want it to land
+          top: '0%',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '40%', // Size of the text image
+          width: '40%',
           zIndex: 2,
           pointerEvents: 'none',
         }}
       />
-      <div 
+      <div
         ref={statsRefLeft}
         style={{
           position: 'absolute',
+          height: '45%',
           top: '50%',
-          left: '15%',
+          left: '20%',
           transform: 'translateY(-50%)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           zIndex: 3,
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          padding: '15px',
+          padding: '10px',
           borderRadius: '10px',
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-          width: '20%',
+          width: '10%',
         }}
       >
-        <img 
-          src={madridlogo} 
-          alt="Real Madrid Logo" 
-          style={{ 
-            width: '60px', 
-            height: 'auto', 
-            marginBottom: '10px' 
+        <img
+          src={madridlogo}
+          alt="Real Madrid Logo"
+          style={{
+            width: '60px',
+            height: 'auto',
+            marginBottom: '10px'
           }}
         />
         <h3 style={{ margin: '5px 0', color: '#0b1560' }}>Real Madrid</h3>
-        <div style={{ 
-          width: '100%', 
+        <div style={{
+          width: '100%',
           textAlign: 'center',
           marginTop: '10px'
         }}>
@@ -397,51 +430,50 @@ const ELClasicoVis = () => {
           fontWeight: 'bold',
           color: '#333',
           zIndex: 3,
-          backgroundColor: 'rgba(255, 255, 255, 0.7)',
-          padding: '5px 15px',
+          background: 'none',
+          padding: '5px 0px',
           borderRadius: '5px',
           textAlign: 'center',
         }}
       >
         Match History {displayCount > 0 ? `(${displayCount} of 217)` : ""}
-        <div style={{ fontSize: '16px', marginTop: '5px', fontWeight: 'normal' }}>
-          {isPlaying ? `Speed: ${animationSpeed}x` : ''}
-        </div>
       </h2>
 
       {/* Barcelona Stats - Right Side */}
-      <div 
+      <div
         ref={statsRefRight}
         style={{
+          height: '43%',
           position: 'absolute',
           top: '50%',
-          right: '15%',
           transform: 'translateY(-50%)',
+          right: '20%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           zIndex: 3,
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          padding: '15px',
+          padding: '10px',
+          paddingTop: '30px',
           borderRadius: '10px',
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-          width: '20%',
+          width: '10%',
         }}
       >
-        <img 
-          src={barcelonalogo} 
-          alt="Barcelona Logo" 
-          style={{ 
-            width: '60px', 
-            height: 'auto', 
-            marginBottom: '10px' 
+        <img
+          src={barcelonalogo}
+          alt="Barcelona Logo"
+          style={{
+            width: '60px',
+            height: 'auto',
+            marginBottom: '10px'
           }}
         />
-        <h3 style={{ margin: '5px 0', color: '#a50044' }}>Barcelona</h3>
-        <div style={{ 
-          width: '100%', 
+        <h3 style={{ margin: '20px 0', color: '#a50044' }}>Barcelona</h3>
+        <div style={{
+          width: '100%',
           textAlign: 'center',
-          marginTop: '10px'
+          marginTop: '-15px'
         }}>
           <div style={{ margin: '10px 0' }}>
             <p style={{ margin: '0', fontWeight: 'bold', fontSize: '22px', color: '#1a73e8' }}>{stats.barcelona.wins}</p>
@@ -480,7 +512,7 @@ const ELClasicoVis = () => {
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
         }}
       >
-        {data.slice(0, displayCount).map((item, index) => (
+        {getFilteredData().map((item, index) => (
           item.Winner === 'Draw' || !item.Winner ? (
             <div
               key={index}
@@ -517,7 +549,96 @@ const ELClasicoVis = () => {
           )
         ))}
       </div>
-      <div 
+
+      <div
+        ref={filterBarRef}
+        style={{
+          position: 'absolute',
+          bottom: '20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '8px',
+          zIndex: 5,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          padding: '8px 15px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        }}
+      >
+        <button
+          onClick={() => setFilter('all')}
+          style={{
+            padding: '6px 12px',
+            backgroundColor: filter === 'all' ? '#4285f4' : '#f1f1f1',
+            color: filter === 'all' ? 'white' : '#333',
+            border: '1px solid #ccc',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: filter === 'all' ? 'bold' : 'normal',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+          }}
+        >
+          <span>All</span>
+        </button>
+
+        <button
+          onClick={() => setFilter('madrid')}
+          style={{
+            padding: '6px 12px',
+            backgroundColor: filter === 'madrid' ? '#0b1560' : '#f1f1f1',
+            color: filter === 'madrid' ? 'white' : '#333',
+            border: '1px solid #ccc',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: filter === 'madrid' ? 'bold' : 'normal',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+          }}
+        >
+          <img src={madridlogo} alt="Madrid" style={{ width: '15px', height: '15px' }} />
+          <span>Madrid</span>
+        </button>
+
+        <button
+          onClick={() => setFilter('draw')}
+          style={{
+            padding: '6px 12px',
+            backgroundColor: filter === 'draw' ? '#fbbc05' : '#f1f1f1',
+            color: filter === 'draw' ? 'white' : '#333',
+            border: '1px solid #ccc',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: filter === 'draw' ? 'bold' : 'normal',
+          }}
+        >
+          Draw
+        </button>
+
+        <button
+          onClick={() => setFilter('barca')}
+          style={{
+            padding: '6px 12px',
+            backgroundColor: filter === 'barca' ? '#a50044' : '#f1f1f1',
+            color: filter === 'barca' ? 'white' : '#333',
+            border: '1px solid #ccc',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: filter === 'barca' ? 'bold' : 'normal',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+          }}
+        >
+          <img src={barcelonalogo} alt="Barcelona" style={{ width: '15px', height: '15px' }} />
+          <span>Barça</span>
+        </button>
+      </div>
+
+      <div
         ref={controlsRef}
         style={{
           position: 'absolute',
@@ -533,7 +654,7 @@ const ELClasicoVis = () => {
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
         }}
       >
-        <button 
+        <button
           onClick={resetVisualization}
           style={{
             padding: '8px 15px',
@@ -547,8 +668,8 @@ const ELClasicoVis = () => {
         >
           Reset
         </button>
-        
-        <button 
+
+        <button
           onClick={isPlaying ? stopAnimation : startAnimation}
           style={{
             padding: '8px 15px',
@@ -562,7 +683,7 @@ const ELClasicoVis = () => {
         >
           {isPlaying ? 'Pause' : 'Play'}
         </button>
-        
+
         <div style={{ display: 'flex', alignItems: 'center', marginLeft: '5px' }}>
           <span style={{ marginRight: '10px', fontSize: '14px' }}>Speed: {animationSpeed}x</span>
         </div>
