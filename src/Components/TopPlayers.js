@@ -253,7 +253,7 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
   d3.select(container).selectAll("svg").remove();
 
   const width = options.width;
-  const height = options.height + 600;
+  const height = options.height + 590;
 
   const tooltip = d3.select(container).select("#tooltip");
 
@@ -265,7 +265,7 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
     .style("z-index", 3)
     .style("position", "absolute")
     .style("left", "40%")
-    .style("top", "50%")
+    .style("top", "60%")
     .style("transform", "translate(-490px, -400px)")
     .style("pointer-events", "all");
 
@@ -324,8 +324,8 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
         .html(
           `<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`
         )
-        .style("left", `${mouseX + 45}px`)
-        .style("top", `${mouseY + 90}px`)
+        .style("left", `${mouseX + 23}px`)
+        .style("top", `${mouseY + 23}px`)
         .style("opacity", 1)
         .transition()
         .duration(50);
@@ -362,8 +362,8 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
         .html(
           `<strong>Connection</strong><br>${sourceName} → ${targetName}<br> <strong>Years Played Together: </strong>${linkData.value}`
         )
-        .style("left", `${mouseX + 83}px`)
-        .style("top", `${mouseY + 70}px`)
+        .style("left", `${mouseX + 20}px`)
+        .style("top", `${mouseY + 25}px`)
         .style("opacity", 1)
         .transition()
         .duration(50);
@@ -382,12 +382,10 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
     })
     .attr("fill", "none");
 
-  link.attr(
-    "d",
-    d3
-      .linkHorizontal()
-      .source((d) => [d.source.x, d.source.y])
-      .target((d) => [d.target.x, d.target.y])
+  link.attr("d",
+      d3.linkHorizontal()
+        .source((d) => [d.source.x, d.source.y])
+        .target((d) => [d.target.x, d.target.y])
   );
 
   const node = vizGroup
@@ -404,8 +402,8 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
   node
     .append("image")
     .attr("xlink:href", jersey)
-    .attr("width", 100)
-    .attr("height", 100)
+    .attr("width", 70)
+    .attr("height", 70)
     .attr("x", -33.5)
     .attr("y", -41.5)
     .style("z-index", 3);
@@ -414,12 +412,12 @@ function defaultNetwork(container, options = {}, handlePlayerClick) {
     .append("text")
     .text((d) => d.name)
     .attr("text-anchor", "middle")
-    .attr("dy", 68)
+    .attr("dy", 45)
     .attr("dx", (d) => {
-      if (d.id === "LB") {
-        return 10;
+      if (d.position === "LB") {
+        return 14;
       }
-      return 18;
+      return 4;
     })
     .attr("font-size", "15px")
     .attr("fill", "#fff")
@@ -464,10 +462,6 @@ const TopPlayers = () => {
                       handlePlayerClick
                     );
                   }
-                  else {
-
-                  }
-                  // }
               }
 
               const fetchPlayersData = async () => {
@@ -485,15 +479,6 @@ const TopPlayers = () => {
               // Component is out of view
               setlightEffect(false);
               setCheckXI(true);
-
-              // vizRef.current = defaultNetwork(
-              //   containerRef.current,
-              //   { width: 2000, height: 550 },
-              //   handlePlayerClick
-              // );
-
-              // console.log('Component is not visible');
-              
             }
           });
         },
@@ -586,7 +571,6 @@ const TopPlayers = () => {
             value: linksToPlayer[i]["Number_of_years_played_together"],
           });
         }
-
         setCheckXI(true);
       }
 
@@ -618,8 +602,8 @@ const TopPlayers = () => {
           top: "33%",
           left: "36%",
           transform: "translate(-50%, -50%)",
-          width: "1050px",
-          height: "620px",
+          width: "820px",
+          height: "460px",
           backgroundColor: "rgba(0, 0, 0)",
           borderRadius: "20px",
           boxShadow: "0 0 30px rgba(0,0,0,0.4)",
@@ -645,6 +629,7 @@ const TopPlayers = () => {
                 backgroundImage: `url(${football_pitch})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
+                borderRadius: "20px",
                 backgroundRepeat: "no-repeat",
                 zIndex: 2,
                 opacity: 10,

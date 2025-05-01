@@ -8,6 +8,8 @@ import bg from '../img/transitions/elclasicobg.jpg';
 import madridlogo from '../img/real-madrid-logo.png';
 import barcelonalogo from '../img/fc_barcelona.png';
 import clasicodata from '../mng/el_clasico.csv';
+
+
 gsap.registerPlugin(ScrollTrigger);
 
 const ELClasicoVis = () => {
@@ -26,7 +28,7 @@ const ELClasicoVis = () => {
     barcelona: { wins: 0, losses: 0, draws: 0 }
   });
   const [displayCount, setDisplayCount] = useState(0);
-  const [animationSpeed, setAnimationSpeed] = useState(1); // Animation speed multiplier
+  const [animationSpeed, setAnimationSpeed] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
   const animationRef = useRef(null);
   const [filter, setFilter] = useState('all');
