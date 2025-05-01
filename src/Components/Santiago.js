@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import santiago from '../img/santiago.png';
-import real_madrid_1trophy from '../img/real_madrid_1trophy.jpg';
+import santiago from '../img/sanitago.png';
+import real_madrid_1trophy from '../img/sanitago.png';
+import Dominance from './Dominance';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,6 +66,10 @@ const Santiago = () => {
       tl.fromTo(overlayRef4.current, 
                 { opacity: 0 }, 
                 { opacity: 1, duration: 0.3 }
+              );
+      tl.fromTo(overlayRef4.current, 
+                { opacity: 0 }, 
+                { opacity: 1, duration: 0.5 }
               );
     
      
@@ -252,7 +257,6 @@ const Santiago = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: 'white',
     padding: '2rem',
     textAlign: 'center',
   }}>
@@ -261,33 +265,8 @@ const Santiago = () => {
         padding: '2rem',
         marginTop: '300px',
     }}>
-        <h2 style={{
-            fontFamily: '"IM Fell English", "Times New Roman", serif',
-            fontSize: '36px',
-            color: '#3a3226',
-            fontWeight: 'bold',
-            lineHeight: '1.6',
-            textAlign: 'center',
-            letterSpacing: '0.03em',
-            paddingBottom: '1rem',
-            borderBottom: '2px solid #8b6f47',
-        }}>
-            Data Vis Page
-        </h2>
-        <p style={{
-            fontFamily: '"IM Fell English", "Times New Roman", serif',
-            fontSize: '20px',
-            color: '#3a3226',
-            fontWeight: 'normal',
-            lineHeight: '1.6',
-            textAlign: 'justify',
-            letterSpacing: '0.03em',
-            textShadow: '0.5px 0.5px 1px rgba(155, 125, 85, 0.2)',
-            padding: '1.5rem',
-            borderLeft: '3px solid #8b6f47'
-        }}>
-            
-        </p>
+        
+        <Dominance/>
     </div>
 </div>
 

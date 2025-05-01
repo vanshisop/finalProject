@@ -227,7 +227,6 @@ export default function App() {
             
               <SantiagoScroll />
               <LostDominance />
-              <Dominance />
               <Galacticos />
               <GalacticoPhotos />
               <GalacticoVis />
