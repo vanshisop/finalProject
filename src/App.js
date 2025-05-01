@@ -4,11 +4,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Timeline from './Components/Timeline';
 import Trophies from './Components/Trophies';
-import RealMadridOrigins from './Components/RealMadridOrigins';
+import RealMadridOrigins from './Components/EarlySteps/RealMadridOrigins';
 import Ramos from './Components/Ramos';
-import CopaDelRey from './Components/CopaDelRey';
+import CopaDelRey from './Components/EarlySteps/CopaDelRey';
 import SantiagoScroll from './Components/Santiago';
-import FirstPhoto from './Components/FirstPhoto';
+import FirstPhoto from './Components/EarlySteps/FirstPhoto';
 import Dominance from './Components/Dominance';
 import LostDominance from './Components/Lost Dominance';
 import Galacticos from './Components/Galacticos';
@@ -24,6 +24,9 @@ import TopPlayers  from './Components/TopPlayers';
 
 import Studio from './Components/Studio';
 import Gallery from './Components/Gallery';
+import FirstVictory from './Components/EarlySteps/FirstVictory';
+import EarlySuccessAndLaliga from './Components/EarlySteps/EarlySuccessAndLaliga';
+import EarlySuccessLineChart from './Components/EarlySteps/EarlySuccessLineChart';
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -216,138 +219,12 @@ export default function App() {
           <div style={{ paddingTop: "80px" }}>
             <RealMadridOrigins />
             <CopaDelRey />
-            <Parallax
-              translateY={[-20, 20]}
-              style={{
-                height: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  width: "60%",
-                }}
-              >
-                <h1>First Taste of Victory</h1>
-                <h4>
-                  Real Madrid won their first Copa del Rey title in 1905, just
-                  three years after the club was founded...
-                </h4>
-              </div>
-            </Parallax>
+            <FirstVictory/>
             <FirstPhoto />
             <div style={{ paddingTop: "80px" }}>
-              <Parallax
-                translateY={[-20, 20]}
-                style={{
-                  height: "100vh",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "Arial, sans-serif",
-                    backgroundColor: "#ffffff",
-                    padding: "20px",
-                    borderRadius: "12px",
-                    maxWidth: "700px",
-                    margin: "auto",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                    lineHeight: "1.6",
-                  }}
-                >
-                  <h2 style={{ color: "#2c3e50" }}>
-                    ⚽ Early Glory of Madrid Football Club (1910–1920)
-                  </h2>
-                  <p>
-                    In the early 20th century,{" "}
-                    <strong>Madrid Football Club</strong> quickly emerged as a
-                    dominant force in Spanish football. Their early triumphs in
-                    the <strong>Copa del Rey</strong> — then the most
-                    prestigious national competition — were a testament to their
-                    quality and ambition. Madrid FC secured an incredible four
-                    consecutive titles in <strong>1905</strong>,{" "}
-                    <strong>1906</strong>, <strong>1907</strong>, and{" "}
-                    <strong>1908</strong>, becoming the first club to achieve
-                    such a feat. These victories played a crucial role in
-                    establishing the club's reputation and setting the stage for
-                    future successes.
-                  </p>
-                  <p>
-                    As the club's influence grew, so did its infrastructure. In{" "}
-                    <strong>1912</strong>, Madrid FC inaugurated its first
-                    official stadium, <strong>Campo de O'Donnell</strong>. With
-                    a capacity of around 5,000 spectators, this stadium provided
-                    a permanent home for the club, enhancing its professional
-                    image and fan experience.
-                  </p>
-                  <p>
-                    At that point, the club was still operating under the name{" "}
-                    <strong>Madrid Football Club</strong>. It wasn't until{" "}
-                    <strong>1920</strong> that King Alfonso XIII granted the
-                    club royal patronage, bestowing the title <strong>"Real"</strong>{" "}
-                    (meaning "Royal") and allowing the team to become officially
-                    known as <strong>Real Madrid Club de Fútbol</strong>. Along
-                    with the new name came a redesigned crest featuring the
-                    royal crown, symbolizing the club’s elevated status in
-                    Spanish society.
-                  </p>
-                </div>
-              </Parallax>
-              <Parallax
-                translateY={[-20, 20]}
-                style={{
-                  height: "160vh",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <div style={{ width: "60%" }}>
-                  <p>
-                    La Liga, officially known as the Primera División, was
-                    established in 1928 to bring greater organization and
-                    competition to Spanish football. Before its inception,
-                    football in Spain was more regional, with clubs competing in
-                    various local and regional tournaments. The creation of La
-                    Liga marked a new era for Spanish football, and it became
-                    the top-tier professional league, providing a platform for
-                    the country's best teams to compete on a national level. The
-                    first season of La Liga, held in 1929, featured 10 teams,
-                    including some of Spain's most prominent clubs. This new
-                    league structure allowed for more consistent and high-level
-                    competition, helping to elevate the status of Spanish
-                    football internationally.
-                  </p>
-                </div>
-              </Parallax>
-              
-              <Parallax
-                translateY={[-20, 20]}
-                style={{
-                  height: "100vh",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: 0,
-                  padding: 0,
-                }}
-              >
-                <div
-                  style={{
-                    width: "60%",
-                    height: "100%",
-                  }}
-                >
-                  <h1>Early Success Line Chart</h1>
-                </div>
-              </Parallax>
+              <EarlySuccessAndLaliga/>
+              <EarlySuccessLineChart/>
+            
               <SantiagoScroll />
               <LostDominance />
               <Dominance />

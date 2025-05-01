@@ -1,17 +1,11 @@
+import React from 'react';
 import { Parallax } from 'react-scroll-parallax';
-import realMadridImg from '../img/madrid.jpg'
-import '../App.css';
+import realMadridImg from '../../img/madrid.jpg'
+
+import ParallaxComp from '../Parallax/Parallax';
 export default function RealMadridOrigins() {
   return (
-    <Parallax translateY={[-20, 20]} style={{
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      height: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingTop: '90px'
-    }}>
+   <ParallaxComp>
       <div style={{
         color: 'black',
         padding: '40px',
@@ -30,6 +24,6 @@ export default function RealMadridOrigins() {
         </div>
       </div>
       </div>
-    </Parallax>
+      </ParallaxComp>
   );
 }

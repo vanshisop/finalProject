@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import santiago from '../img/santiago.png';
-import real_madrid_1trophy from '../img/real_madrid_1trophy.jpg';
+import real_madrid_1trophy from '../../img/real_madrid_1trophy.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
