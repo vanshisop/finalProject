@@ -16,17 +16,13 @@ import alonsoImg from '../img/faces/xabi.png';
 import baleImg from '../img/faces/bale.png';
 
 const barChart_data = [
-  {  value: 60, name: "Luís Figo", peakValue: 60},
-  {  value: 73.5, name: "Zinedine Zidane", peakValue: 77.5},
-  {  value: 45, name: "Ronaldo Nazário", peakValue: 45},
-  {  value: 37.5, name: "David Beckham", peakValue: 150},
-  {  value: 24, name: "Robinho", peakValue: 34 },
-  {  value: 14, name: "Ruud van Nistelrooy", peakValue: 32},
-  {  value: 67, name: "Kaká", peakValue: 67},
-  {  value: 30, name: "Karim Benzema", peakValue: 60},
-  {  value: 94, name: "Cristiano Ronaldo", peakValue: 230},
-  {  value: 35.5, name: "Xabi Alonso", peakValue: 35.5},
-  {  value: 100, name: "Gareth Bale", peakValue : 100}
+  {  value: 60, name: "Luís Figo", peakValue: 21},
+  {  value: 73.5, name: "Zinedine Zidane", peakValue: 35},
+  {  value: 45, name: "Ronaldo Nazário", peakValue: 36},
+  {  value: 37.5, name: "David Beckham", peakValue: 36},
+  {  value: 67, name: "Kaká", peakValue: 36},
+  {  value: 94, name: "Cristiano Ronaldo", peakValue: 69.5},
+  {  value: 100, name: "Gareth Bale", peakValue : 69.5}
 ];
 
 // Function to get player image based on player name
@@ -128,7 +124,17 @@ function createBarChart(container, {width, height}) {
         .duration(800)
         .delay((d, i) => i * 100)
         .attr("y", d => y(d.value))
-        .attr("height", d => rec_height - y(d.value)),
+        .attr("height", d => rec_height - y(d.value))
+        .each(function(d) {  
+          d3.select(this.parentNode).append("line")
+            .attr("x1", x(d.name))
+            .attr("x2", x(d.name) + x.bandwidth())
+            .attr("y1", y(d.peakValue)) 
+            .attr("y2", y(d.peakValue))  
+            .attr("stroke", "#000")  
+            .attr("stroke-dasharray", "4,4") 
+            .attr("stroke-width", 2);
+        }),
   
       update => update
         .transition()
@@ -186,7 +192,7 @@ function createBarChart(container, {width, height}) {
       .attr("dy", "1em")
       .style("text-anchor", "middle")
       .style("font-weight","bold")
-      .text("Market Value in Million €");
+      .text("Spending in Million €");
 
     svg.append("text")
       .attr("x", rec_width / 2  )
@@ -267,7 +273,7 @@ const GalacticoVis = () => {
         boxSizing: 'border-box'
       }}>
         <div style={{ width: '100%', maxWidth: dimensions.width, margin: '0 auto' }}>
-          <h2 style={{ textAlign: 'center' }}>Real Madrid's Greatest Vis</h2>
+          <h2 style={{ textAlign: 'center' }}>Real Madrid's Insane Spending Pedigree</h2>
           <div 
             ref={barChart} 
             style={{
@@ -277,7 +283,7 @@ const GalacticoVis = () => {
               margin: '0 auto',
               position: 'relative'
             }}>
-            {/* Debug image element */}
+
             <div style={{ position: "absolute", top: -30, left: 10, fontSize: 12, opacity: 0.5 }}>
               <img src={figoImg} alt="Debug" width="20" height="20" style={{display: "inline-block"}} />
             </div>

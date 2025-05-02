@@ -1,15 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-<<<<<<< HEAD
-import santiago from '../img/sanitago.png';
-import real_madrid_1trophy from '../img/sanitago.png';
-import Dominance from './Dominance';
-=======
 import santiago from '../img/santiago.png';
-import * as d3 from 'd3';
->>>>>>> f7242a42a9b46cc2e7f5edef95494a006b9997b7
 
+import * as d3 from "d3";
 gsap.registerPlugin(ScrollTrigger);
 
 const teamsData = {
@@ -305,7 +299,6 @@ const Santiago = () => {
         { opacity: 1, duration: 1 }
       );
           
-<<<<<<< HEAD
        tl.to(overlayRef3.current,
             { opacity: 0 , duration: 1}, 
             )
@@ -319,11 +312,6 @@ const Santiago = () => {
               );
     
      
-=======
-      tl.to(overlayRef3.current,
-        { opacity: 0, duration: 1 }
-      );
->>>>>>> f7242a42a9b46cc2e7f5edef95494a006b9997b7
 
       tl.fromTo(overlayRef4.current, 
         { opacity: 0 }, 
@@ -424,7 +412,6 @@ const Santiago = () => {
               fontWeight: 'bold',
               letterSpacing: '1px'
             }}>T</span>he inception of the European Championships marks a pivotal moment in the history of football. The first tournament, held in 1960, brought together the best teams from across Europe to compete for the prestigious title. This tournament, created to unify the continent through the love of the sport, paved the way for the future of international football. It has since evolved into one of the most-watched and celebrated sporting events, capturing the imagination of millions every four years.
-<<<<<<< HEAD
         </p>
     </div>
 </div>
@@ -501,57 +488,11 @@ const Santiago = () => {
         marginTop: '300px',
     }}>
         
-        <Dominance/>
+      
     </div>
 </div>
-=======
-          </p>
-        </div>
-      </div>
->>>>>>> f7242a42a9b46cc2e7f5edef95494a006b9997b7
 
-      {/* OVERLAY 3: Utter Ridiculous */}
-      <div ref={overlayRef3} style={overlayStyle}>
-        <div style={{
-          maxWidth: '1300px',
-          padding: '2rem',
-          marginTop: '30px',
-        }}>
-          <h2 style={{
-            fontFamily: '"IM Fell English", "Times New Roman", serif',
-            fontSize: '36px',
-            color: '#3a3226',
-            fontWeight: 'bold',
-            lineHeight: '1.6',
-            textAlign: 'center',
-            letterSpacing: '0.03em',
-            paddingBottom: '1rem',
-            borderBottom: '2px solid #8b6f47',
-          }}>
-            Utter Ridiculous!!
-          </h2>
-          <p style={{
-            fontFamily: '"IM Fell English", "Times New Roman", serif',
-            fontSize: '20px',
-            color: '#3a3226',
-            fontWeight: 'normal',
-            lineHeight: '1.6',
-            textAlign: 'justify',
-            letterSpacing: '0.03em',
-            textShadow: '0.5px 0.5px 1px rgba(155, 125, 85, 0.2)',
-            padding: '1.5rem',
-            borderLeft: '3px solid #8b6f47'
-          }}>
-            <span style={{
-              fontSize: '34px',
-              color: '#5c4d3c',
-              fontFamily: '"IM Fell DW Pica SC", serif',
-              fontWeight: 'bold',
-              letterSpacing: '1px'
-            }}>R</span>eal Madrid wins first 5 European Championships in a row.
-          </p>
-        </div>
-      </div>
+   
 
       {/* OVERLAY 4: Newspaper Layout */}
       <div ref={overlayRef4} style={{
@@ -742,7 +683,7 @@ const Santiago = () => {
                     position: 'relative',
                     zIndex: 1000 
                   }}
-                  onClick={(e) => e.stopPropagation()} // Prevent click from bubbling up
+                  onClick={(e) => e.stopPropagation()} 
                 >
                   {Object.keys(teamsData).filter(team => team !== 'Real Madrid').map(team => (
                     <option key={team} value={team}>{team}</option>
@@ -752,7 +693,7 @@ const Santiago = () => {
             </div>
             
           </div>
-          {/* RIGHT COLUMN: Quote of the Decade */}
+
           <div style={{ 
             width: '30%', 
             padding: '25px',
