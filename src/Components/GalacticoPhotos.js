@@ -11,8 +11,6 @@ import modric from '../img/modric.jpg'
 import modricFace from '../img/faces/modric.png';
 import cr7 from '../img/faces/cr7.png';
 import zlatan from '../img/faces/zlatan.png';
-import iniesta from '../img/faces/iniesta.png';
-import rooney from '../img/faces/rooney.png';
 import bale from '../img/faces/bale.png';
 import falcao from '../img/faces/falcao.png';
 import villa from '../img/faces/villa.png';
@@ -26,8 +24,6 @@ const modricData = [
   {"player":"Luka Modric","age": 40, "league": "Top league" , img : modricFace},
   { "player": "Cristiano Ronaldo", "age": 38, "league": "Smaller league", img : cr7 },
   { "player": "Zlatan Ibrahimović", "age": 41, "league": "Smaller league", img : zlatan },
-  { "player": "Andrés Iniesta", "age": 39, "league": "Smaller league", img : ronaldoN },
-  { "player": "Wayne Rooney", "age": 36, "league": "Retired", img : ronaldoN },
   { "player": "Gareth Bale", "age": 34, "league": "Retired", img : bale },
   { "player": "Radamel Falcao", "age": 37, "league": "Smaller league", img : falcao },
   { "player": "David Villa", "age": 39, "league": "Smaller league", img : villa },

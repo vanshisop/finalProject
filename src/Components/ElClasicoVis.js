@@ -9,7 +9,6 @@ import madridlogo from '../img/real-madrid-logo.png';
 import barcelonalogo from '../img/fc_barcelona.png';
 import clasicodata from '../mng/el_clasico.csv';
 
-
 gsap.registerPlugin(ScrollTrigger);
 
 const ELClasicoVis = () => {
@@ -56,11 +55,11 @@ const ELClasicoVis = () => {
     return newStats;
   };
 
-  // Function to calculate win percentage
-  const calculateWinPercentage = (team) => {
-    const totalMatches = team.wins + team.losses + team.draws;
-    return totalMatches > 0 ? ((team.wins / totalMatches) * 100).toFixed(1) : '0';
-  };
+      // Function to calculate win percentage
+      const calculateWinPercentage = (team) => {
+        const totalMatches = team.wins + team.losses + team.draws;
+        return totalMatches > 0 ? ((team.wins / totalMatches) * 100).toFixed(1) : '0';
+      };
 
   // Reset function for control bar
   const resetVisualization = () => {
