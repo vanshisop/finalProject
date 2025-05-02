@@ -9,7 +9,6 @@ import Ramos from './Components/Ramos';
 import CopaDelRey from './Components/EarlySteps/CopaDelRey';
 import SantiagoScroll from './Components/Santiago';
 import FirstPhoto from './Components/EarlySteps/FirstPhoto';
-import Dominance from './Components/Dominance';
 import LostDominance from './Components/Lost Dominance';
 import Galacticos from './Components/Galacticos';
 import GalacticoPhotos from './Components/GalacticoPhotos';
@@ -227,7 +226,6 @@ export default function App() {
             
               <SantiagoScroll />
               <LostDominance />
-              <Dominance />
               <Galacticos />
               <GalacticoPhotos />
               <GalacticoVis />

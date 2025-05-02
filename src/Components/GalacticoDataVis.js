@@ -2,12 +2,24 @@ import React, { useEffect, useRef, useState} from 'react';
 import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
 import * as d3 from "d3";
 
+// Import player images
+import figoImg from '../img/faces/figo.png';
+import zidaneImg from '../img/faces/zidane.png';
+import r9Img from '../img/faces/r9.png';
+import beckhamImg from '../img/faces/beckham.png';
+import robinhoImg from '../img/faces/robinho.png';
+import rudd from '../img/faces/rudd.png';
+import kakaImg from '../img/faces/kaka.png';
+import benzemaImg from '../img/faces/benzema.png';
+import cr7Img from '../img/faces/cr7.png';
+import alonsoImg from '../img/faces/xabi.png';
+import baleImg from '../img/faces/bale.png';
+
 const barChart_data = [
   {  value: 60, name: "Luís Figo", peakValue: 60},
   {  value: 73.5, name: "Zinedine Zidane", peakValue: 77.5},
   {  value: 45, name: "Ronaldo Nazário", peakValue: 45},
   {  value: 37.5, name: "David Beckham", peakValue: 150},
-  {  value: 9, name: "Michael Owen", peakValue: 22},
   {  value: 24, name: "Robinho", peakValue: 34 },
   {  value: 14, name: "Ruud van Nistelrooy", peakValue: 32},
   {  value: 67, name: "Kaká", peakValue: 67},
@@ -17,24 +29,67 @@ const barChart_data = [
   {  value: 100, name: "Gareth Bale", peakValue : 100}
 ];
 
+// Function to get player image based on player name
+const getPlayerImage = (playerName) => {
+  switch(playerName) {
+    case "Luís Figo": return figoImg;
+    case "Zinedine Zidane": return zidaneImg;
+    case "Ronaldo Nazário": return r9Img;
+    case "David Beckham": return beckhamImg;
+    case "Robinho": return robinhoImg;
+    case "Ruud van Nistelrooy": return rudd;
+    case "Kaká": return kakaImg;
+    case "Karim Benzema": return benzemaImg;
+    case "Cristiano Ronaldo": return cr7Img;
+    case "Xabi Alonso": return alonsoImg;
+    case "Gareth Bale": return baleImg;
+    default: return null;
+  }
+};
 
 function createBarChart(container, {width, height}) {
 
+    console.log("Creating bar chart with dimensions");
     d3.select(container).selectAll("*").remove();
 
-    const margin = {top: 30, right : 60, bottom : 100, left : 80 }
-        const rec_width = width - margin.left - margin.right; 
-        const rec_height = height - margin.top - margin.bottom;
+    // Adjusted margins to prevent overflow
+    const margin = {top: 40, right: 50, bottom: 110, left: 70};
+    const rec_width = width - margin.left - margin.right; 
+    const rec_height = height - margin.top - margin.bottom;
 
-    const svg = d3.select(container)
+    // Add a container div with border and ensure it fits content
+    const chartContainer = d3.select(container)
+      .append("div")
+      .style("border", "2px solid #888")
+      .style("border-radius", "8px")
+      .style("box-shadow", "0 4px 8px rgba(0,0,0,0.1)")
+      .style("background", "#fff")
+      .style("padding", "10px")
+      .style("margin-bottom", "20px")
+      .style("box-sizing", "border-box")
+      .style("width", "100%")
+      .style("overflow", "hidden");
+
+    const svg = chartContainer
       .append("svg")
-        .attr("width", rec_width + margin.top + margin.right)
+        .attr("width", "100%") // Make SVG responsive
         .attr("height", rec_height + margin.top + margin.bottom)
+        .attr("viewBox", `0 0 ${rec_width + margin.left + margin.right} ${rec_height + margin.top + margin.bottom}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
       .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
     
+    const defs = svg.append("defs");
+    const filter = defs.append("filter")
+      .attr("height", "130%");
+    
+    filter.append("feOffset")
+      .attr("dx", 3)
+      .attr("dy", 3)
+      .attr("result", "offsetBlur")
+    
     const x = d3.scaleBand()
-      .range([0, rec_width - 10])
+      .range([0, rec_width])
       .domain(barChart_data.map(d => d.name))
       .padding(0.05);
 
@@ -42,8 +97,14 @@ function createBarChart(container, {width, height}) {
       .attr("transform", `translate(0, ${rec_height})`)
       .call(d3.axisBottom(x))
       .selectAll("text")
-        .attr("transform", "translate(-10,0)rotate(-45)")
-        .style("text-anchor", "end");
+        .attr("transform", "translate(-10,0)rotate(-45)") 
+        .style("text-anchor", "end") 
+        .text(function(d) {
+          return d; 
+        })
+        .attr("dy", "0.5em")
+        .attr("y", 10)
+        .style("font-size", "10px");
     
     const y = d3.scaleLinear()
       .domain([0, 100.5])
@@ -75,6 +136,23 @@ function createBarChart(container, {width, height}) {
         .attr("y", d => y(d.value))
         .attr("height", d => rec_height - y(d.value))
     );
+    
+    const imgSize = Math.min(45, x.bandwidth() * 0.8); 
+    
+    svg.selectAll("image")
+      .data(barChart_data)
+      .join("image")
+        .attr("xlink:href", d => getPlayerImage(d.name))
+        .attr("x", d => x(d.name) + (x.bandwidth() - imgSize) / 2)
+        .attr("y", d => y(d.value) + 10) 
+        .attr("width", imgSize)
+        .attr("height", imgSize)
+        .attr("filter", "url(#drop-shadow)") 
+        .style("opacity", 0)
+        .transition()
+        .duration(800)
+        .delay((d, i) => i * 100 + 200)
+        .style("opacity", 1);
   
     
     svg.selectAll("text.bar_label")
@@ -90,14 +168,14 @@ function createBarChart(container, {width, height}) {
         .transition()
         .duration(800)
         .delay((d, i) => i * 100)
-        .attr("y", d => y(d.value) - 5) 
+        .attr("y", d => y(d.value) - 10) 
         .style("opacity", 1),
   
       update => update
         .transition()
         .duration(800)
         .delay((d, i) => i * 100)
-        .attr("y", d => y(d.value) - 5)
+        .attr("y", d => y(d.value) - 10) 
         .style("opacity", 1)
     );  
 
@@ -127,39 +205,83 @@ const GalacticoVis = () => {
 
   const barChart = useRef();
   const created = useRef(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 800, height: 500 }); // Set initial values
+
+  useEffect(() => {
+    // Handle window resize to make chart responsive
+    function handleResize() {
+      if (barChart.current) {
+        // Calculate appropriate dimensions based on screen size
+        const containerWidth = Math.min(1200, window.innerWidth * 0.9);
+        const containerHeight = Math.min(600, window.innerHeight * 0.6);
+        
+        setDimensions({
+          width: containerWidth,
+          height: containerHeight
+        });
+      }
+    }
+ 
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); 
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && !created.current) {
-          createBarChart(barChart.current, { width: 1300, height: 600 });
+        if (entry.isIntersecting && !created.current && dimensions.width > 0) {
+          createBarChart(barChart.current, dimensions);
           created.current = true;
+        } else if (!entry.isIntersecting) {
+          created.current = false;
         }
       });
+    }, {
+      threshold: 0.2 
     });
   
     if (barChart.current) {
       observer.observe(barChart.current);
     }
   
-    return () => {};
-  }, []);
-  
+    return () => {
+      if (barChart.current) {
+        observer.unobserve(barChart.current);
+      }
+    };
+  }, [dimensions]); 
 
   return (
     <Parallax translateY={[-20, 20]} style={{
-        height: '100vh',
+        minHeight: '100vh',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 0,
-        paddingTop: '300px'
+        flexDirection: 'column',
+        padding: '20px',
+        boxSizing: 'border-box'
       }}>
-        <div>
-          <h2>Real Madrid's Greatest Vis</h2>
-              <div ref={barChart} style={{top:"2%",margin:""}}></div>
+        <div style={{ width: '100%', maxWidth: dimensions.width, margin: '0 auto' }}>
+          <h2 style={{ textAlign: 'center' }}>Real Madrid's Greatest Vis</h2>
+          <div 
+            ref={barChart} 
+            style={{
+              width: '100%',
+              height: dimensions.height,
+              maxWidth: '100%',
+              margin: '0 auto',
+              position: 'relative'
+            }}>
+            {/* Debug image element */}
+            <div style={{ position: "absolute", top: -30, left: 10, fontSize: 12, opacity: 0.5 }}>
+              <img src={figoImg} alt="Debug" width="20" height="20" style={{display: "inline-block"}} />
+            </div>
+          </div>
         </div>
       </Parallax>
   );
