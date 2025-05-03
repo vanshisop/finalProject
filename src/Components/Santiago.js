@@ -405,7 +405,7 @@ const Santiago = () => {
               <p style={{
                 fontFamily: '"IM Fell English", serif', fontSize: '16px',
                 fontWeight: 'bold', textAlign: 'center', color: '#000000', marginBottom: '10px',
-              }}>Madrid's Trophies vs. Local Teams (1955–1960)</p>
+              }}>Madrid's Trophies vs. Local Teams (1943–1978)</p>
             </div>
             <div style={{
               display: 'flex', justifyContent: 'space-between',

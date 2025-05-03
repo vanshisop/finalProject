@@ -16,20 +16,15 @@ import alonsoImg from '../img/faces/xabi.png';
 import baleImg from '../img/faces/bale.png';
 
 const barChart_data = [
-  {  value: 60, name: "Luís Figo", peakValue: 60},
-  {  value: 73.5, name: "Zinedine Zidane", peakValue: 77.5},
-  {  value: 45, name: "Ronaldo Nazário", peakValue: 45},
-  {  value: 37.5, name: "David Beckham", peakValue: 150},
-  {  value: 24, name: "Robinho", peakValue: 34 },
-  {  value: 14, name: "Ruud van Nistelrooy", peakValue: 32},
-  {  value: 67, name: "Kaká", peakValue: 67},
-  {  value: 30, name: "Karim Benzema", peakValue: 60},
-  {  value: 94, name: "Cristiano Ronaldo", peakValue: 230},
-  {  value: 35.5, name: "Xabi Alonso", peakValue: 35.5},
-  {  value: 100, name: "Gareth Bale", peakValue : 100}
+  {  value: 60, name: "Luís Figo", peakValue: 21},
+  {  value: 73.5, name: "Zinedine Zidane", peakValue: 35},
+  {  value: 45, name: "Ronaldo Nazário", peakValue: 36},
+  {  value: 37.5, name: "David Beckham", peakValue: 36},
+  {  value: 67, name: "Kaká", peakValue: 36},
+  {  value: 94, name: "Cristiano Ronaldo", peakValue: 69.5},
+  {  value: 100, name: "Gareth Bale", peakValue : 69.5}
 ];
 
-// Function to get player image based on player name
 const getPlayerImage = (playerName) => {
   switch(playerName) {
     case "Luís Figo": return figoImg;
@@ -52,12 +47,11 @@ function createBarChart(container, {width, height}) {
     console.log("Creating bar chart with dimensions");
     d3.select(container).selectAll("*").remove();
 
-    // Adjusted margins to prevent overflow
     const margin = {top: 40, right: 50, bottom: 110, left: 70};
     const rec_width = width - margin.left - margin.right; 
     const rec_height = height - margin.top - margin.bottom;
 
-    // Add a container div with border and ensure it fits content
+
     const chartContainer = d3.select(container)
       .append("div")
       .style("border", "2px solid #888")
@@ -72,7 +66,7 @@ function createBarChart(container, {width, height}) {
 
     const svg = chartContainer
       .append("svg")
-        .attr("width", "100%") // Make SVG responsive
+        .attr("width", "100%") 
         .attr("height", rec_height + margin.top + margin.bottom)
         .attr("viewBox", `0 0 ${rec_width + margin.left + margin.right} ${rec_height + margin.top + margin.bottom}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
@@ -128,7 +122,17 @@ function createBarChart(container, {width, height}) {
         .duration(800)
         .delay((d, i) => i * 100)
         .attr("y", d => y(d.value))
-        .attr("height", d => rec_height - y(d.value)),
+        .attr("height", d => rec_height - y(d.value))
+        .each(function(d) {  
+          d3.select(this.parentNode).append("line")
+            .attr("x1", x(d.name))
+            .attr("x2", x(d.name) + x.bandwidth())
+            .attr("y1", y(d.peakValue)) 
+            .attr("y2", y(d.peakValue))  
+            .attr("stroke", "#000")  
+            .attr("stroke-dasharray", "4,4") 
+            .attr("stroke-width", 2);
+        }),
   
       update => update
         .transition()
@@ -186,7 +190,7 @@ function createBarChart(container, {width, height}) {
       .attr("dy", "1em")
       .style("text-anchor", "middle")
       .style("font-weight","bold")
-      .text("Market Value in Million €");
+      .text("Spending in Million €");
 
     svg.append("text")
       .attr("x", rec_width / 2  )
@@ -205,13 +209,13 @@ const GalacticoVis = () => {
 
   const barChart = useRef();
   const created = useRef(false);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 500 }); // Set initial values
+  const [dimensions, setDimensions] = useState({ width: 800, height: 500 }); 
 
   useEffect(() => {
-    // Handle window resize to make chart responsive
+
     function handleResize() {
       if (barChart.current) {
-        // Calculate appropriate dimensions based on screen size
+     
         const containerWidth = Math.min(1200, window.innerWidth * 0.9);
         const containerHeight = Math.min(600, window.innerHeight * 0.6);
         
@@ -267,7 +271,7 @@ const GalacticoVis = () => {
         boxSizing: 'border-box'
       }}>
         <div style={{ width: '100%', maxWidth: dimensions.width, margin: '0 auto' }}>
-          <h2 style={{ textAlign: 'center' }}>Real Madrid's Greatest Vis</h2>
+          <h2 style={{ textAlign: 'center' }}>Real Madrid's Insane Spending Pedigree</h2>
           <div 
             ref={barChart} 
             style={{
@@ -277,9 +281,12 @@ const GalacticoVis = () => {
               margin: '0 auto',
               position: 'relative'
             }}>
-            {/* Debug image element */}
+
             <div style={{ position: "absolute", top: -30, left: 10, fontSize: 12, opacity: 0.5 }}>
               <img src={figoImg} alt="Debug" width="20" height="20" style={{display: "inline-block"}} />
+            </div>
+            <div>
+              <p>The dotted line represents the spending done by an   </p>
             </div>
           </div>
         </div>

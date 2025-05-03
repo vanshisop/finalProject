@@ -5,7 +5,7 @@ import ParallaxComp from '../Parallax/Parallax';
 import { useRef } from 'react';
 
 export default function EarlySuccessLineChart() {
-    const [activeChart, setActiveChart] = useState('copa'); // Default to Copa Del Rey
+    const [activeChart, setActiveChart] = useState('copa'); 
     
     const data1 = [
         { group: "1929", value: 2 },
@@ -16,7 +16,6 @@ export default function EarlySuccessLineChart() {
         { group: "1934", value: 2 },
         { group: "1935", value: 2 },
         { group: "1936", value: 2 },
-        // La Liga was suspended from 1936–37 to 1938–39 due to the Spanish Civil War
         { group: "1937", value: 4 },
         { group: "1938", value: 6 },
         { group: "1939", value: 2 },
@@ -177,7 +176,7 @@ export default function EarlySuccessLineChart() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexDirection: 'column',
-            }}>  
+            }}> 
                 <h2>Real Madrid's Early Exploits</h2>
                 
                 <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
@@ -211,6 +210,25 @@ export default function EarlySuccessLineChart() {
                         overflow: 'visible' // This allows axis labels to be visible outside the SVG
                     }}
                 />
+                
+                <div style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    padding: '15px',
+                    borderRadius: '10px',
+                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.58)',
+                    maxWidth: '1000px',
+                    textAlign: 'left',
+                    marginTop: '-100px',
+                    }}>
+                <p style={{
+                    margin: 0,
+                    fontSize: '1.5rem',
+                    fontStyle: 'italic',
+                    color: '#333'
+                }}>
+                They became popular and were all over the NEWS
+              </p>
+            </div>
             </div>
         </ParallaxComp>
     );

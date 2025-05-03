@@ -1,46 +1,39 @@
 import React, { useEffect, useRef } from 'react';
 import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
-
+import news from '../img/6-2.png'
+import ParallaxComp from './Parallax/Parallax';
 
 
 const UCL = () => {
   
   return (
     <div>
-    <Parallax translateY={[-20, 20]} style={{
-        height: '100vh',
+    <ParallaxComp>
+      <div style={{
         width: '100%',
+        height: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 0,
-        paddingTop: '300px'
+        backgroundImage: `url(${news})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        marginTop: '300px'
       }}>
-        <div style={{
-          width: '60%',
-          height: '100%',
-        }}>
-          <h2>UCL</h2>
-          <p>Madrid's quest to win UCL. Came close in 2012 but lost.... </p>
         </div>
-      </Parallax>
-      <Parallax translateY={[-20, 20]} style={{
-        height: '100vh',
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 0,
-        paddingTop: '300px'
-      }}>
+      </ParallaxComp>
+
+      <ParallaxComp>
         <div style={{
-          width: '60%',
-          height: '100%',
-        }}>
-          <h2>2014</h2>
-          <p>Madrid is on the brink of La Decima but a solid performance by atletico. Madrid's losing 1-0 all hope's lost but with the last play of the game... </p>
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+  
+          }}>
         </div>
-      </Parallax>
+      </ParallaxComp>
     </div>
   );
 };
