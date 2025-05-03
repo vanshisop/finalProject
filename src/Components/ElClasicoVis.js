@@ -87,9 +87,8 @@ const ELClasicoVis = () => {
     let currentSpeed = animationSpeed;
 
     const animate = () => {
-      // Increase speed every 5 data points
       if (displayCount > 0 && displayCount % 5 === 0 && currentSpeed < 25) {
-        currentSpeed = Math.min(currentSpeed + 2, 25); // Increase in steps of 2, max 25x
+        currentSpeed = Math.min(currentSpeed + 2, 25); 
         setAnimationSpeed(currentSpeed);
       }
 
@@ -171,7 +170,6 @@ const ELClasicoVis = () => {
         }
       );
 
-      // NEW: Move the text from above the screen to center
       gsap.fromTo(textRef.current,
         { y: "-100%", opacity: 0 },
         {
