@@ -5,6 +5,7 @@ import EuropeUCLs from './UCLMa';
 
 import ramos from '../img/ramosss.jpg'
 import ladecima from '../img/ladecima.jpeg'
+import UCLMa from './UCLMa';
 gsap.registerPlugin(ScrollTrigger);
 
 const Ramos = () => {
@@ -146,7 +147,9 @@ const Ramos = () => {
         backgroundPosition: 'center center',
         zIndex: 4,
       }} >
-        <h1>Real Madrid's UCL wins data vis map</h1>
+        <div>
+        <UCLMa/>
+        </div>
       </div>
     </div>
   );

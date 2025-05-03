@@ -25,7 +25,6 @@ const barChart_data = [
   {  value: 100, name: "Gareth Bale", peakValue : 69.5}
 ];
 
-// Function to get player image based on player name
 const getPlayerImage = (playerName) => {
   switch(playerName) {
     case "Luís Figo": return figoImg;
@@ -285,6 +284,9 @@ const GalacticoVis = () => {
 
             <div style={{ position: "absolute", top: -30, left: 10, fontSize: 12, opacity: 0.5 }}>
               <img src={figoImg} alt="Debug" width="20" height="20" style={{display: "inline-block"}} />
+            </div>
+            <div>
+              <p>The dotted line represents the spending done by an   </p>
             </div>
           </div>
         </div>

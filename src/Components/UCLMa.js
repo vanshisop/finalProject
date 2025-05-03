@@ -353,10 +353,12 @@ const UCLMa = () => {
       height: '100vh',
       position: 'relative',
       display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       padding: '20px'
     }}>
+            <h1>Real Madrid's UCL Final Wins Across Europe</h1>
       <div style={{
         width: '80%',
         height: '80%',

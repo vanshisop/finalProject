@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import santiago from '../img/santiago.png';
+import * as d3 from 'd3';
 
-import * as d3 from "d3";
 gsap.registerPlugin(ScrollTrigger);
 
 const teamsData = {
@@ -247,43 +247,6 @@ const Santiago = () => {
           scrub: true,
         }
       });
-  
-      tl.fromTo(overlayRef.current, 
-        { opacity: 0 }, 
-        { opacity: 1, duration: 1.2 }
-      );
-  
-      tl.to(overlayRef.current, 
-        { opacity: 0, duration: 1 }
-      );
-  
-      tl.fromTo(overlayRef2.current, 
-        { opacity: 0 }, 
-        { opacity: 1, duration: 1 }
-      );
-      
-      tl.to(overlayRef2.current,
-        { opacity: 0, duration: 1 }
-      );
-    
-      tl.fromTo(overlayRef3.current, 
-        { opacity: 0 }, 
-        { opacity: 1, duration: 1 }
-      );
-          
-       tl.to(overlayRef3.current,
-            { opacity: 0 , duration: 1}, 
-            )
-      tl.fromTo(overlayRef4.current, 
-                { opacity: 0 }, 
-                { opacity: 1, duration: 0.3 }
-              );
-      tl.fromTo(overlayRef4.current, 
-                { opacity: 0 }, 
-                { opacity: 1, duration: 0.5 }
-              );
-    
-     
 
       tl.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 1.2 });
       tl.to(overlayRef.current, { opacity: 0, duration: 1 });
@@ -354,83 +317,35 @@ const Santiago = () => {
               fontFamily: '"IM Fell DW Pica SC", serif',
               fontWeight: 'bold', letterSpacing: '1px'
             }}>T</span>he inception of the European Championships marks a pivotal moment in the history of football. The first tournament, held in 1960, brought together the best teams from across Europe to compete for the prestigious title. This tournament, created to unify the continent through the love of the sport, paved the way for the future of international football. It has since evolved into one of the most-watched and celebrated sporting events, capturing the imagination of millions every four years.
-        </p>
-    </div>
-</div>
-<div ref={overlayRef3} style={{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: '100%',
-    width: '100%',
-    zIndex: 2,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    padding: '2rem',
-    textAlign: 'center',
-  }}>
-    <div style={{
-        maxWidth: '1000px',
-        padding: '2rem',
-        marginTop: '300px',
-    }}>
-        <h2 style={{
+          </p>
+        </div>
+      </div>
+
+      <div ref={overlayRef3} style={overlayStyle}>
+        <div style={{ maxWidth: '1300px', padding: '2rem', marginTop: '30px' }}>
+          <h2 style={{
             fontFamily: '"IM Fell English", "Times New Roman", serif',
-            fontSize: '36px',
-            color: '#3a3226',
-            fontWeight: 'bold',
-            lineHeight: '1.6',
-            textAlign: 'center',
-            letterSpacing: '0.03em',
-            paddingBottom: '1rem',
-            borderBottom: '2px solid #8b6f47',
-        }}>
+            fontSize: '36px', color: '#3a3226', fontWeight: 'bold',
+            lineHeight: '1.6', textAlign: 'center', letterSpacing: '0.03em',
+            paddingBottom: '1rem', borderBottom: '2px solid #8b6f47',
+          }}>
             Utter Ridiculous!!
-        </h2>
-        <p style={{
+          </h2>
+          <p style={{
             fontFamily: '"IM Fell English", "Times New Roman", serif',
             fontSize: '20px', color: '#3a3226', fontWeight: 'normal',
             lineHeight: '1.6', textAlign: 'justify', letterSpacing: '0.03em',
             textShadow: '0.5px 0.5px 1px rgba(155, 125, 85, 0.2)',
-            padding: '1.5rem',
-            borderLeft: '3px solid #8b6f47'
-        }}>
+            padding: '1.5rem', borderLeft: '3px solid #8b6f47'
+          }}>
             <span style={{
-                fontSize: '34px',
-                color: '#5c4d3c',
-                fontFamily: '"IM Fell DW Pica SC", serif',
-                fontWeight: 'bold',
-                letterSpacing: '1px'
+              fontSize: '34px', color: '#5c4d3c',
+              fontFamily: '"IM Fell DW Pica SC", serif',
+              fontWeight: 'bold', letterSpacing: '1px'
             }}>R</span>eal Madrid wins first 5 European Championships in a row.
-        </p>
-    </div>
-</div>
-<div ref={overlayRef4} style={{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: '100%',
-    width: '100%',
-    zIndex: 2,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '2rem',
-    textAlign: 'center',
-  }}>
-    <div style={{
-        maxWidth: '1000px',
-        padding: '2rem',
-        marginTop: '300px',
-    }}>
-        
-      
-    </div>
-</div>
-
-   
+          </p>
+        </div>
+      </div>
 
       <div ref={overlayRef4} style={{
         position: 'absolute', top: '36vh', left: 0, height: '100%', width: '100%',
@@ -490,7 +405,7 @@ const Santiago = () => {
               <p style={{
                 fontFamily: '"IM Fell English", serif', fontSize: '16px',
                 fontWeight: 'bold', textAlign: 'center', color: '#000000', marginBottom: '10px',
-              }}>Madrid's Trophies vs. Local Teams (1955–1960)</p>
+              }}>Madrid's Trophies vs. Local Teams (1943–1978)</p>
             </div>
             <div style={{
               display: 'flex', justifyContent: 'space-between',
@@ -522,7 +437,7 @@ const Santiago = () => {
                     fontSize: '13px', fontFamily: '"IM Fell English", serif',
                     cursor: 'pointer', position: 'relative', zIndex: 1000
                   }}
-                  onClick={(e) => e.stopPropagation()} 
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {Object.keys(teamsData).filter(team => team !== 'Real Madrid').map(team => (
                     <option key={team} value={team}>{team}</option>
@@ -539,11 +454,8 @@ const Santiago = () => {
             }} ref={chartRef} />
           </div>
 
-          <div style={{ 
-            width: '30%', 
-            padding: '25px',
-            paddingTop: '0px',
-            borderLeft: '1px solid #8b6f47',
+          <div style={{
+            width: '30%', padding: '25px', paddingTop: '0px', borderLeft: '1px solid #8b6f47',
           }}>
             <div style={{ marginBottom: '15px' }}>
               <h2 style={{

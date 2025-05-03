@@ -199,7 +199,6 @@ function createModricScatterPlot(container, {width, height}) {
 }
 
 
-
 function createTimeline(container, {width, height}, player) {
   d3.select(container).selectAll("*").remove();
 
