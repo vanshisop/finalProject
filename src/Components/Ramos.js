@@ -13,9 +13,9 @@ const Ramos = () => {
   const bg2Ref = useRef(null);
   const bg3Ref = useRef(null);
   const bg4Ref = useRef(null);
+  const bg5Ref = useRef(null);
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Pin the section during scroll
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
@@ -33,17 +33,20 @@ const Ramos = () => {
         }
       });
 
-      // Step 1: bg1 visible, bg2 invisible
-      gsap.set(bg1Ref.current, { opacity: 1 });
+      gsap.set(bg1Ref.current, { opacity: 0 });
       gsap.set(bg2Ref.current, { opacity: 0 });
       gsap.set(bg3Ref.current, { opacity: 0 });
       gsap.set(bg4Ref.current, { opacity: 0 });
-      // Step 2: Transition from bg1 to bg2
+      gsap.set(bg5Ref.current, { opacity: 1 });
+
+      tl.to(bg5Ref.current, { opacity: 0, duration: 2 });
+      tl.to(bg1Ref.current, { opacity: 1, duration: 2 }, "<"); 
+      
       tl.to(bg1Ref.current, { opacity: 0, duration: 2 });
-      tl.to(bg2Ref.current, { opacity: 1, duration: 2 }, "<"); // "<" means start at the same time
+      tl.to(bg2Ref.current, { opacity: 1, duration: 2 }, "<"); 
 
       tl.to(bg2Ref.current, { opacity: 0, duration: 2 });
-      tl.to(bg3Ref.current, { opacity: 1, duration: 2 }, "<"); // "<" means start at the same time
+      tl.to(bg3Ref.current, { opacity: 1, duration: 2 }, "<"); 
 
       tl.to(bg3Ref.current, { opacity: 0, duration: 2 });
       tl.to(bg4Ref.current, { opacity: 1, duration: 2 }, "<");
@@ -58,7 +61,31 @@ const Ramos = () => {
 
   return (
     <div ref={sectionRef} style={{ height: '100vh', position: 'relative', overflow: 'hidden' }}>
-      {/* First Background */}
+      <div ref={bg5Ref} style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        background: 'linear-gradient(to bottom right, #f2f6fc, #dbe9f4)',
+        color: '#001f5c',
+        zIndex: 5,
+
+      }}>
+        <p style={{
+          fontSize: '2rem',
+          fontWeight: 'bold',
+          maxWidth: '800px',
+          lineHeight: '1.5',
+          textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)'
+        }}>
+          24 May 2012 . Real Madrid reach the Champions League final after 12 long years .In the 36th minute, Diego Godín looped a header over Iker Casillas after a mistake from the keeper. Being 1-0 down Real Madrid looked down and out of the game...
+        </p>
+      </div>
       <div ref={bg1Ref} style={{
         position: 'absolute',
         top: 0,
@@ -71,19 +98,30 @@ const Ramos = () => {
         zIndex: 1,
       }} />
 
-      {/* Second Background */}
-      <div ref={bg2Ref} style={{
+<div ref={bg2Ref} style={{
         position: 'absolute',
         top: 0,
         left: 0,
         height: '100%',
         width: '100%',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center center',
-        zIndex: 2, // higher z-index so it layers above the first background
-      }} >
-        <p>The most miracle of headers, in extra time this jubilant madrid side went on to win the entire UCL.</p>
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        background: 'linear-gradient(to bottom right, #f2f6fc, #dbe9f4)',
+        color: '#001f5c',
+        zIndex: 5,
 
+      }}>
+        <p style={{
+          fontSize: '2rem',
+          fontWeight: 'bold',
+          maxWidth: '800px',
+          lineHeight: '1.5',
+          textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)'
+        }}>
+          With the most miracle of headers, Real Madrid went on to win the UCL in extra time and fulfilled the dream of La Decima. 
+        </p>
       </div>
 
 <     div ref={bg3Ref} style={{
@@ -95,7 +133,7 @@ const Ramos = () => {
         backgroundImage: `url(${ladecima})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
-        zIndex: 3, // higher z-index so it layers above the first background
+        zIndex: 3,
       }} />
 
     <div ref={bg4Ref} style={{
@@ -106,11 +144,10 @@ const Ramos = () => {
         width: '100%',
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
-        zIndex: 4, // higher z-index so it layers above the first background
+        zIndex: 4,
       }} >
         <h1>Real Madrid's UCL wins data vis map</h1>
       </div>
-      <EuropeUCLs/>
     </div>
   );
 };

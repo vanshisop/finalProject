@@ -312,7 +312,6 @@ const Santiago = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Pin the section during scroll
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",

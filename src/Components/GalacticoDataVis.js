@@ -48,12 +48,11 @@ function createBarChart(container, {width, height}) {
     console.log("Creating bar chart with dimensions");
     d3.select(container).selectAll("*").remove();
 
-    // Adjusted margins to prevent overflow
     const margin = {top: 40, right: 50, bottom: 110, left: 70};
     const rec_width = width - margin.left - margin.right; 
     const rec_height = height - margin.top - margin.bottom;
 
-    // Add a container div with border and ensure it fits content
+
     const chartContainer = d3.select(container)
       .append("div")
       .style("border", "2px solid #888")
@@ -68,7 +67,7 @@ function createBarChart(container, {width, height}) {
 
     const svg = chartContainer
       .append("svg")
-        .attr("width", "100%") // Make SVG responsive
+        .attr("width", "100%") 
         .attr("height", rec_height + margin.top + margin.bottom)
         .attr("viewBox", `0 0 ${rec_width + margin.left + margin.right} ${rec_height + margin.top + margin.bottom}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
@@ -211,13 +210,13 @@ const GalacticoVis = () => {
 
   const barChart = useRef();
   const created = useRef(false);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 500 }); // Set initial values
+  const [dimensions, setDimensions] = useState({ width: 800, height: 500 }); 
 
   useEffect(() => {
-    // Handle window resize to make chart responsive
+
     function handleResize() {
       if (barChart.current) {
-        // Calculate appropriate dimensions based on screen size
+     
         const containerWidth = Math.min(1200, window.innerWidth * 0.9);
         const containerHeight = Math.min(600, window.innerHeight * 0.6);
         

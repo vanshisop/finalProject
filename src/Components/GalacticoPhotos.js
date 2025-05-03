@@ -458,7 +458,7 @@ const Santiago = () => {
           startAnimation( beckhHamTimeline.current.__animatedElements, d3.scaleLinear()
           .domain([1991, 2021])
           .range([0, window.innerWidth - 90])
-          .nice() , data["figo"][0])
+          .nice() , data["beckham"][0])
         }
         isBeckhamVisible.current = true;
       },
@@ -470,7 +470,7 @@ const Santiago = () => {
           startAnimation( beckhHamTimeline.current.__animatedElements,d3.scaleLinear()
           .domain([1991, 2021])
           .range([0, window.innerWidth - 90])
-          .nice() , data["figo"][0])
+          .nice() , data["beckham"][0])
         }
         isBeckhamVisible.current = true;
       },
